@@ -38,4 +38,4 @@ mise exec -- hk install
 mise run check
 ```
 
-[AGENTS.md](AGENTS.md) holds the authoring rules, and [docs/decisions/](docs/decisions/) records why the repository is set up this way.
+[CONTRIBUTING.md](CONTRIBUTING.md) covers making a change and releasing it, [AGENTS.md](AGENTS.md) holds the authoring rules, and [docs/decisions/](docs/decisions/) records why the repository is set up this way.

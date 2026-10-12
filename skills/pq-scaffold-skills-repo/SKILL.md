@@ -55,5 +55,6 @@ Tell the user what you wrote and the next steps:
 - Add the first skill as `skills/__PLUGIN__-<name>/SKILL.md`, following the target's `AGENTS.md`.
 - Commit everything, including the generated `mise.lock` and `.mise/locks/`, which pin the tool installs, with a Conventional Commits message, such as `feat: scaffold skills collection`, and push; release-please opens the first release pull request from `main`.
 - The README holds the install commands for each agent.
+- In the GitHub repository settings, allow only squash merges, titled from the pull request, and turn on private vulnerability reporting; `CONTRIBUTING.md` relies on both.
 
 Leave committing and pushing to the user.
