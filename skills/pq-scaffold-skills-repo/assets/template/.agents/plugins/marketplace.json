@@ -1,0 +1,20 @@
+{
+  "name": "__PLUGIN__",
+  "interface": {
+    "displayName": "__PLUGIN__"
+  },
+  "plugins": [
+    {
+      "name": "__PLUGIN__",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

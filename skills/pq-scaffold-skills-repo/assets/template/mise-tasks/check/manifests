@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+#MISE description="Keep the Claude and Codex manifests consistent"
+"""Check that the plugin manifests agree on name and version.
+
+release-please bumps the version in both plugin.json files; a hand edit to one
+of them would ship different versions to Claude and Codex.
+"""
+
+import json
+import sys
+from pathlib import Path
+
+PLUGIN_MANIFESTS = (".claude-plugin/plugin.json", ".codex-plugin/plugin.json")
+MARKETPLACES = (".claude-plugin/marketplace.json", ".agents/plugins/marketplace.json")
+RELEASE_MANIFEST = ".release-please-manifest.json"
+
+
+def load(path: str) -> dict:
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def main() -> int:
+    errors = []
+    # Codex truncates every skill body to 8,000 bytes when a root plugin.json
+    # declares the agent-plugins.org schema (docs/decisions/0003)
+    if Path("plugin.json").exists():
+        errors.append("plugin.json: remove it; plugin metadata lives in .claude-plugin/ and .codex-plugin/")
+
+    plugins = {path: load(path) for path in PLUGIN_MANIFESTS}
+    names = {manifest["name"] for manifest in plugins.values()}
+    for path in MARKETPLACES:
+        names |= {entry["name"] for entry in load(path)["plugins"]}
+    if len(names) != 1:
+        errors.append(f"plugin names differ across manifests: {sorted(names)}")
+
+    versions = {path: manifest.get("version") for path, manifest in plugins.items()}
+    versions[RELEASE_MANIFEST] = load(RELEASE_MANIFEST)["."]
+    if len(set(versions.values())) != 1:
+        errors.append(f"versions differ: {versions}")
+
+    for error in errors:
+        print(error, file=sys.stderr)
+    if not errors:
+        print(f"manifests agree: {names.pop()} {versions[RELEASE_MANIFEST]}")
+    return 1 if errors else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

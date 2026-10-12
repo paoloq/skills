@@ -1,0 +1,25 @@
+amends "package://github.com/jdx/hk/releases/download/v2.5.0/hk@2.5.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.5.0/hk@2.5.0#/Builtins.pkl"
+
+hooks {
+  ["pre-commit"] {
+    fix = true
+    stash = "git"
+    steps {
+      ["check-merge-conflict"] = Builtins.check_merge_conflict
+      ["newlines"] = Builtins.newlines
+      ["trailing-whitespace"] = Builtins.trailing_whitespace
+      // the same gate CI runs, so a commit that passes here passes there
+      ["check"] {
+        exclusive = true
+        check = "mise run check"
+      }
+    }
+  }
+  // release-please derives versions and the changelog from commit messages
+  ["commit-msg"] {
+    steps {
+      ["conventional-commit"] = Builtins.check_conventional_commit
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "pq",
+  "version": "0.0.0",
+  "description": "Paolo Arduin's agent skills.",
+  "author": {
+    "name": "Paolo Arduin",
+    "url": "https://github.com/paoloq"
+  },
+  "homepage": "https://github.com/paoloq/skills",
+  "repository": "https://github.com/paoloq/skills",
+  "license": "MIT",
+  "keywords": ["skills"]
+}

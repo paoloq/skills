@@ -1,0 +1,22 @@
+{
+  "name": "__PLUGIN__",
+  "version": "0.0.0",
+  "description": "__DESCRIPTION__",
+  "author": {
+    "name": "__AUTHOR__",
+    "url": "https://github.com/__OWNER__"
+  },
+  "homepage": "https://github.com/__OWNER__/__REPO__",
+  "repository": "https://github.com/__OWNER__/__REPO__",
+  "license": "MIT",
+  "keywords": ["skills"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "__PLUGIN__",
+    "shortDescription": "__DESCRIPTION__",
+    "developerName": "__AUTHOR__",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Read", "Write"],
+    "websiteURL": "https://github.com/__OWNER__/__REPO__"
+  }
+}

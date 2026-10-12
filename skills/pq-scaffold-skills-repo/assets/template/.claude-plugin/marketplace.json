@@ -1,0 +1,16 @@
+{
+  "name": "__PLUGIN__",
+  "owner": {
+    "name": "__AUTHOR__",
+    "url": "https://github.com/__OWNER__"
+  },
+  "description": "__DESCRIPTION__",
+  "plugins": [
+    {
+      "name": "__PLUGIN__",
+      "source": "./",
+      "description": "__DESCRIPTION__",
+      "category": "development"
+    }
+  ]
+}

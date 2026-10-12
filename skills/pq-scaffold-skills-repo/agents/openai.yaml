@@ -1,0 +1,5 @@
+interface:
+  display_name: "Scaffold Skills Repo"
+  short_description: "Start a skills collection for Claude, Codex, and npx skills"
+policy:
+  allow_implicit_invocation: false
