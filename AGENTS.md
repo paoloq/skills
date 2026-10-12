@@ -13,7 +13,7 @@ A collection of agent skills, shipped as the plugin `pq` to Claude Code and Code
 
 ## Releases
 
-- Commit messages and pull request titles follow Conventional Commits; release-please turns them into versions and the changelog.
+- Follow [CONTRIBUTING.md](CONTRIBUTING.md) for commit types, pull requests, and releases; a skill change users should get is `feat` or `fix`, never `docs`.
 - release-please owns every `version` field; edit none by hand.
 - Keep `plugin.json` out of the repository root: Codex would truncate every skill to 8,000 bytes ([why](docs/decisions/0003-no-root-plugin-json.md)).
 
