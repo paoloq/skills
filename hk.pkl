@@ -16,7 +16,7 @@ hooks {
       }
     }
   }
-  // release-please derives versions and the changelog from commit messages
+  // squash merges use the pull request title, so commits follow the same convention
   ["commit-msg"] {
     steps {
       ["conventional-commit"] = Builtins.check_conventional_commit

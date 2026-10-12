@@ -7,7 +7,7 @@ date: 2026-10-12
 
 ## Context and Problem Statement
 
-Codex reads `AGENTS.md` and Claude Code reads `CLAUDE.md`. The plugin is the repository root, and `claude plugin validate --strict` fails on a regular `CLAUDE.md` file there, because Claude Code never loads a plugin's `CLAUDE.md` as context. How do both agents get the same instructions?
+Codex reads `AGENTS.md` and Claude Code reads `CLAUDE.md`. The repository root is also the plugin root, where `claude plugin validate --strict` rejects a regular `CLAUDE.md` file. How do both agents get the same instructions?
 
 ## Considered Options
 
@@ -17,9 +17,8 @@ Codex reads `AGENTS.md` and Claude Code reads `CLAUDE.md`. The plugin is the rep
 
 ## Decision Outcome
 
-Chosen option: "`AGENTS.md` with all instructions, `CLAUDE.md` as a symlink to it", because the symlink passes `claude plugin validate --strict` where the import file fails, and an `AGENTS.md` without outside pointers works for any contributor's agent. EveryInc/compound-engineering-plugin, vercel-labs/agent-skills, and wshobson/agents use the same symlink.
+Chosen option: "`AGENTS.md` with all instructions, `CLAUDE.md` as a symlink to it", because the symlink passes strict validation where the import file fails, and instructions without outside pointers work for any contributor's agent.
 
 ### Consequences
 
-* Good, because both agents read one file.
-* Bad, because a checkout without symlink support (Windows without developer mode) gets a `CLAUDE.md` holding only the path.
+* Bad, because a checkout without symlink support, such as Windows without developer mode, gets a `CLAUDE.md` holding only the path.

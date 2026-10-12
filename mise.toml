@@ -3,25 +3,21 @@ min_version = "2026.10.7"
 [settings]
 lockfile = true
 
+# read by mise-tasks/check/skills; an empty value turns the rule off
+[env]
+SKILL_PREFIX = "pq-"
+SKILL_INVOCATION_KEY = "disable-model-invocation"
+
 [tools]
 uv = "0.13"
-node = "24"
 hk = "2.5.0"
-"npm:@anthropic-ai/claude-code" = "2.1.296"
-"npm:skills" = "1.7.2"
-actionlint = "1.7.12"
+claude-code = "2.1.296"
+jactionlint = "2.1.0"
 
 [tasks.check]
 description = "Run every check that CI runs"
 depends = ["check:*"]
 
-[tasks."check:plugin"]
-description = "Validate the Claude marketplace and plugin manifests"
-run = [
-  "claude plugin validate --strict .",
-  "claude plugin validate --strict .claude-plugin/plugin.json",
-]
-
 [tasks."check:workflows"]
 description = "Lint the GitHub Actions workflows"
-run = "actionlint"
+run = "jactionlint"

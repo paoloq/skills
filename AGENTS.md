@@ -11,15 +11,14 @@ A collection of agent skills, shipped as the plugin `pq` to Claude Code and Code
 - Write the body as ordered steps, each ending on a completion criterion the agent can check; push material only some cases need into a sibling file the step links.
 - Keep paths in a skill relative to its own folder.
 
-## Releases
+## Manifests
 
-- Follow [CONTRIBUTING.md](CONTRIBUTING.md) for commit types, pull requests, and releases; a skill change users should get is `feat` or `fix`, never `docs`.
-- release-please owns every `version` field; edit none by hand.
+- Leave `version` out of every manifest: installers then track the latest commit on `main` ([why](docs/decisions/0005-no-versions.md)). [CONTRIBUTING.md](CONTRIBUTING.md) covers the pull request flow.
 - Keep `plugin.json` out of the repository root: Codex would truncate every skill to 8,000 bytes ([why](docs/decisions/0003-no-root-plugin-json.md)).
 
-## Mirrored files
+## Scaffold source
 
-[pq-scaffold-skills-repo](skills/pq-scaffold-skills-repo/SKILL.md) generates new repositories from copies of this repository's files in its `assets/` folder. When you change a mirrored file, make the same change to its copy there.
+[pq-scaffold-skills-repo](skills/pq-scaffold-skills-repo/SKILL.md) builds new repositories by copying this one from `main` and editing the copy per [its choices table](skills/pq-scaffold-skills-repo/references/choices.md). When a change adds, removes, or renames a repository file, or moves text the table names, update the table in the same change.
 
 ## Decisions
 

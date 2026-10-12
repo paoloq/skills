@@ -28,6 +28,29 @@ npx skills add paoloq/skills
 
 `npx skills add paoloq/skills --list` lists the skills without installing them.
 
+## Update
+
+The plugin has no versions, so every merge to `main` is an update, and it reaches you when you update.
+
+Claude Code updates only marketplaces with auto-update on, which is off by default for this one. Turn on **Enable auto-update** for `pq` under `/plugin` → **Marketplaces**, or update by hand:
+
+```sh
+claude plugin marketplace update pq
+claude plugin update pq@pq
+```
+
+Codex:
+
+```sh
+codex plugin marketplace upgrade pq
+```
+
+Any other agent:
+
+```sh
+npx skills update
+```
+
 ## Development
 
 The repository uses [mise](https://mise.jdx.dev) for its tools and checks:
@@ -38,4 +61,4 @@ mise exec -- hk install
 mise run check
 ```
 
-[CONTRIBUTING.md](CONTRIBUTING.md) covers making a change and releasing it, [AGENTS.md](AGENTS.md) holds the authoring rules, and [docs/decisions/](docs/decisions/) records why the repository is set up this way.
+[CONTRIBUTING.md](CONTRIBUTING.md) covers making a change, [AGENTS.md](AGENTS.md) holds the authoring rules, and [docs/decisions/](docs/decisions/) records why the repository is set up this way.

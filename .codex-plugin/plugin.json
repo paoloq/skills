@@ -1,6 +1,5 @@
 {
   "name": "pq",
-  "version": "0.0.0",
   "description": "Paolo Arduin's agent skills.",
   "author": {
     "name": "Paolo Arduin",
@@ -9,14 +8,20 @@
   "homepage": "https://github.com/paoloq/skills",
   "repository": "https://github.com/paoloq/skills",
   "license": "MIT",
-  "keywords": ["skills"],
+  "keywords": [
+    "skills"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "pq",
     "shortDescription": "Paolo Arduin's agent skills.",
     "developerName": "Paolo Arduin",
     "category": "Developer Tools",
-    "capabilities": ["Interactive", "Read", "Write"],
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
     "websiteURL": "https://github.com/paoloq/skills"
   }
 }

@@ -1,60 +1,84 @@
 ---
 name: pq-scaffold-skills-repo
-description: Scaffold an empty repository into a skills collection that installs in Claude Code, Codex, and npx skills.
+description: Scaffold an empty repository into a skills collection for Claude Code, Codex, and npx skills, tailored through an interview.
 disable-model-invocation: true
 ---
 
 # Scaffold a skills repository
 
-Turn an empty Git repository into a skills collection that ships as one plugin to Claude Code and Codex and as plain skills to `npx skills`. [assets/template/](assets/template/) is a complete copy of such a repository with placeholders; its `docs/decisions/` records explain every choice, so read one before changing what it covers.
+Build a skills collection by copying paoloq/skills, itself a working collection, and tailoring the copy to the user's answers. [references/choices.md](references/choices.md) lists every choice with its default, its supported alternatives, and the exact edits each answer makes. Offer only those alternatives: when the user wants another, such as a different task runner or release tool, say the wizard does not support it and keep the default.
 
 ## 1. Confirm the target
 
-The target is the current directory unless the user names another. It qualifies when it is a Git repository holding nothing beyond `.git`, `README.md`, `LICENSE`, and `.gitignore`.
+The target is the current directory unless the user names another. It qualifies when all of these hold:
 
-When it holds anything else, such as `skills/`, a plugin manifest, or `mise.toml`, stop and tell the user this skill scaffolds new repositories only.
+- It is a Git repository; when it is not, offer `git init -b main`.
+- Its current branch is `main`, which the workflows and docs assume; when the repository has no commits yet, offer `git branch -m main`.
+- It holds nothing beyond `.git`, `README.md`, `LICENSE`, and `.gitignore`. When `README.md` or `LICENSE` exists, tell the user the scaffold replaces it.
+
+When it holds anything else, such as `skills/` or `mise.toml`, or has commits on another branch, stop and tell the user this wizard scaffolds new repositories only.
 
 Done when the target qualifies, or you have stopped.
 
-## 2. Collect the values
+## 2. Fetch the source
 
-Propose every value at once, filled from the repository where it shows them, and ask the user to confirm or change them in one reply.
+Clone `main` of paoloq/skills, which takes changes only through pull requests that pass CI, into a new temporary folder:
 
-| Placeholder | Value | Proposal |
-|---|---|---|
-| `__OWNER__` | GitHub owner | from `git remote get-url origin` |
-| `__REPO__` | GitHub repository name | from the remote, else the directory name |
-| `__PLUGIN__` | Name of the marketplace, the plugin, and every skill's prefix | ask; suggest the author's initials |
-| `__AUTHOR__` | Name in the manifests and the licence | `git config user.name` |
-| `__DESCRIPTION__` | One sentence describing the collection | `__AUTHOR__'s agent skills.` |
-| `__DATE__` | Today, `YYYY-MM-DD` | today |
-| `__YEAR__` | This year | this year |
+```sh
+source_dir=$(mktemp -d /tmp/pq-scaffold.XXXXXX) && echo "$source_dir"
+git clone --quiet --depth 1 https://github.com/paoloq/skills "$source_dir"
+```
 
-`__PLUGIN__` takes lowercase letters, digits, and hyphens, and cannot start with `claude-` or `anthropic-`, which Claude Code reserves. Keep it short: Claude shows each skill as `/__PLUGIN__:__PLUGIN__-<name>`.
+Shell variables do not survive between commands, so write the printed path literally in every later command; this document calls it the source folder.
 
-Done when the user has confirmed every value.
+When the user names a local clone of paoloq/skills instead, run only the `mktemp` line, then copy the clone's working tree into the source folder without its top-level `.git`, a folder in a clone and a file in a worktree. Tell the user that uncommitted, untracked, and ignored files come along.
 
-## 3. Write the files
+Done when every file and every quoted source text that [references/choices.md](references/choices.md) names exists in the source folder. When one is missing, the table is out of date: clean up (step 7), stop, and tell the user.
 
-1. Copy everything under [assets/template/](assets/template/) into the target, keeping relative paths and dot-directories. When the target already has a `README.md` or `LICENSE` with content, show the user both versions and ask which to keep.
-2. Replace every placeholder in file contents with its confirmed value.
-3. Run `chmod +x mise-tasks/check/*` and `ln -s AGENTS.md CLAUDE.md`. The symlink matters: `claude plugin validate --strict` rejects a regular `CLAUDE.md` at the plugin root.
+## 3. Interview the user
 
-Done when a search of the target for `__[A-Z]+__`, outside `.git`, finds nothing.
+Grill the user through [references/choices.md](references/choices.md) in its order, one choice per question:
 
-## 4. Verify
+- Say what the choice decides, put the default first as the recommendation, and offer only its supported alternatives.
+- Ask a follow-up value, such as a licence identifier or an email address, in the same question.
+- Skip a choice an earlier answer settles.
 
-Run `mise trust`, `mise install`, `mise exec -- hk install`, and `mise run check` in the target. When a check fails, fix the generated file; the checks encode the decisions.
+Then show every answer in one summary and ask the user to confirm or change it.
 
-Done when `mise run check` passes.
+Done when the user has confirmed the summary.
 
-## 5. Hand over
+## 4. Write the files
 
-Tell the user what you wrote and the next steps:
+1. Copy the source folder into the target, except the top-level `/.git`, `/skills`, `/mise.lock`, and `/.mise`. Anchor each exclusion to the top level, as rsync's `--exclude=/skills` does, so `mise-tasks/check/skills` is copied. Keep symlinks as symlinks: `CLAUDE.md` must stay a link to `AGENTS.md`, because `claude plugin validate --strict` rejects a regular file there.
+2. Apply "Every scaffold" in the table, then each answer's edits, including the decision records it changes.
 
-- Add the first skill as `skills/__PLUGIN__-<name>/SKILL.md`, following the target's `AGENTS.md`.
-- Commit everything, including the generated `mise.lock` and `.mise/locks/`, which pin the tool installs, with a Conventional Commits message, such as `feat: scaffold skills collection`, and push; release-please opens the first release pull request from `main`.
+Done when every edit "Every scaffold" and the answers call for is applied, and a search of the target outside `.git` finds only the user's own values for `paoloq`, `Paolo Arduin`, the whole word `pq`, and `2026-10-12`, and no "## Scaffold source" heading.
+
+## 5. Verify
+
+In the target, confirm that `mise --version` is at least the `min_version` in `mise.toml`, then run `mise trust`, `mise install`, `mise lock`, `mise exec -- hk install` when hooks stay, and `mise run check`. `mise install` writes `mise.lock` for this machine only; `mise lock` adds the other platforms, such as the Linux one CI runs on. When a check fails in a generated file, fix that file; the checks encode the answers.
+
+Done when `mise run check` passes and `mise.lock` lists `linux-x64`. When mise is missing or too old, the network fails, or a failure lies outside the generated files, clean up (step 7), stop, and tell the user what failed.
+
+## 6. Apply GitHub settings
+
+Follow "GitHub settings" in the table: propose the settings it lists for step 6, and run their commands only after the user agrees. Then run the table's read-back commands.
+
+Done when every agreed setting reads back as set, or the user declined, or you listed a setting for the reasons the table gives.
+
+## 7. Clean up
+
+Delete the source folder, also when you stop at or after step 2.
+
+Done when the source folder no longer exists.
+
+## 8. Hand over
+
+Tell the user what you wrote, which settings you changed, and the next steps:
+
+- Commit everything, including the generated `mise.lock`, which pins the tool installs, and push it to `main`.
+- After the user pushes the scaffold to `main`, apply the ruleset from "GitHub settings"; offer to run it once the user confirms the push. From then on, `main` takes changes only through pull requests.
+- Add the first skill under `skills/` in a pull request, following the target's `AGENTS.md`; until then, the checks validate only the manifests.
 - The README holds the install commands for each agent.
-- In the GitHub repository settings, allow only squash merges, titled from the pull request, and turn on private vulnerability reporting; `CONTRIBUTING.md` relies on both.
 
 Leave committing and pushing to the user.
