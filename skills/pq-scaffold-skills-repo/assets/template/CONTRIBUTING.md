@@ -13,7 +13,7 @@ This collection takes no outside pull requests.
    - `fix`: a skill that behaved wrongly now behaves as intended; bumps the patch version.
    - `feat!`, or a `BREAKING CHANGE:` footer on a `feat`: a renamed or removed skill; bumps the minor version while the version is `0.x`.
    - `docs`, `chore`, `ci`, `refactor`, `test`: no release. A change to a skill's `SKILL.md` that users should get is a `feat` or `fix`, never `docs`.
-4. Push and open a pull request to `main`, titled as a Conventional Commits message. [CI](.github/workflows/ci.yml) runs `mise run check` and checks the title.
+4. Push and open a pull request to `main`, titled as a Conventional Commits message, with a body written from [the pull request template](.github/pull_request_template.md). `gh pr create --body` skips the template, so read it first. [CI](.github/workflows/ci.yml) runs `mise run check` and checks the title.
 5. Squash-merge once CI passes, with the pull request title as the commit message. Only that squash commit reaches `main`, so it is the one release-please reads.
 
 ## Release
