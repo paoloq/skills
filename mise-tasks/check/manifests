@@ -1,0 +1,57 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.12"
+# ///
+#MISE description="Keep the plugin manifests consistent"
+"""Check that the plugin manifests present agree on the plugin name and carry no version.
+
+A version would pin installed plugins until someone bumps it, while the
+repository relies on installers tracking the latest commit
+(docs/decisions/0005). A repository may ship either agent's manifests, both,
+or neither, so absent files are skipped.
+"""
+
+import json
+import sys
+from pathlib import Path
+
+PLUGIN_MANIFESTS = (".claude-plugin/plugin.json", ".codex-plugin/plugin.json")
+MARKETPLACES = (".claude-plugin/marketplace.json", ".agents/plugins/marketplace.json")
+
+
+def load(path: str) -> dict:
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def main() -> int:
+    errors = []
+    # Codex truncates every skill body to 8,000 bytes when a root plugin.json
+    # declares the agent-plugins.org schema (docs/decisions/0003)
+    if Path("plugin.json").exists():
+        errors.append("plugin.json: remove it; plugin metadata lives in .claude-plugin/ and .codex-plugin/")
+
+    names = set()
+    for path in PLUGIN_MANIFESTS:
+        if Path(path).exists():
+            manifest = load(path)
+            names.add(manifest["name"])
+            if "version" in manifest:
+                errors.append(f"{path}: remove version")
+    for path in MARKETPLACES:
+        if Path(path).exists():
+            for entry in load(path)["plugins"]:
+                names.add(entry["name"])
+                if "version" in entry:
+                    errors.append(f"{path}: remove version from {entry['name']}")
+    if len(names) > 1:
+        errors.append(f"plugin names differ across manifests: {sorted(names)}")
+
+    for error in errors:
+        print(error, file=sys.stderr)
+    if not errors:
+        print(f"manifests agree: {sorted(names)}")
+    return 1 if errors else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,16 @@
+{
+  "name": "pq",
+  "owner": {
+    "name": "Paolo Arduin",
+    "url": "https://github.com/paoloq"
+  },
+  "description": "Paolo Arduin's agent skills.",
+  "plugins": [
+    {
+      "name": "pq",
+      "source": "./",
+      "description": "Paolo Arduin's agent skills.",
+      "category": "development"
+    }
+  ]
+}

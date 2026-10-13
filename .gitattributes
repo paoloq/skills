@@ -1,0 +1,2 @@
+# check out every text file with LF endings, so scripts and hooks run the same on Windows
+* text=auto eol=lf

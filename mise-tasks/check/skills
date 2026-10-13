@@ -1,0 +1,80 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["skills-ref==0.1.1", "strictyaml"]
+# ///
+#MISE description="Validate every skill's frontmatter and invocation settings"
+"""Validate skills/*/ against the Agent Skills spec plus this repository's rules.
+
+mise.toml sets the rules through two variables: SKILL_PREFIX, the prefix every
+skill name carries (empty for none), and SKILL_INVOCATION_KEY, the one key
+outside the spec's six that a skill may use (empty for none). skills-ref
+rejects every key outside the six, so that key is checked here and removed
+before the spec validation runs.
+"""
+
+import os
+import sys
+from pathlib import Path
+
+import strictyaml
+from skills_ref.errors import ParseError
+from skills_ref.parser import parse_frontmatter
+from skills_ref.validator import validate_metadata
+
+INVOCATION_KEY = os.environ.get("SKILL_INVOCATION_KEY", "")
+PREFIX = os.environ.get("SKILL_PREFIX", "")
+
+
+def implicit_invocation_allowed(skill_dir: Path) -> bool:
+    """Read Codex's policy.allow_implicit_invocation, which defaults to true."""
+    openai_yaml = skill_dir / "agents" / "openai.yaml"
+    if not openai_yaml.exists():
+        return True
+    data = strictyaml.load(openai_yaml.read_text(encoding="utf-8")).data
+    policy = data.get("policy", {}) if isinstance(data, dict) else {}
+    return str(policy.get("allow_implicit_invocation", "true")).lower() != "false"
+
+
+def check_skill(skill_dir: Path) -> list[str]:
+    skill_md = skill_dir / "SKILL.md"
+    if not skill_md.exists():
+        return ["missing SKILL.md"]
+    try:
+        metadata, _ = parse_frontmatter(skill_md.read_text(encoding="utf-8"))
+    except ParseError as error:
+        return [str(error)]
+
+    errors = []
+    user_invoked = metadata.pop(INVOCATION_KEY, None) if INVOCATION_KEY else None
+    if user_invoked is not None and user_invoked != "true":
+        errors.append(f"{INVOCATION_KEY} must be true when present; omit it otherwise")
+    errors.extend(validate_metadata(metadata, skill_dir))
+
+    if not str(metadata.get("name", "")).startswith(PREFIX):
+        errors.append(f"name must start with '{PREFIX}'")
+    # Claude reads the frontmatter key and Codex reads agents/openai.yaml, so a
+    # skill that only one of them treats as user-invoked fires on its own in the other
+    if INVOCATION_KEY and (user_invoked == "true") == implicit_invocation_allowed(skill_dir):
+        errors.append(
+            f"{INVOCATION_KEY}: true and agents/openai.yaml "
+            "policy.allow_implicit_invocation: false must be set together"
+        )
+    return errors
+
+
+def main() -> int:
+    # glob, unlike iterdir, tolerates a new repository with no skills/ yet
+    skill_dirs = sorted(path for path in Path("skills").glob("*") if path.is_dir())
+    failed = False
+    for skill_dir in skill_dirs:
+        for error in check_skill(skill_dir):
+            print(f"{skill_dir}: {error}", file=sys.stderr)
+            failed = True
+    if not failed:
+        print(f"{len(skill_dirs)} skills valid")
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

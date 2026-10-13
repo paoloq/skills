@@ -1,0 +1,36 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.12"
+# ///
+#MISE description="Validate the Claude marketplace and plugin manifests"
+"""Run `claude plugin validate` and fail on any error or warning but one.
+
+The manifests carry no version on purpose, so installers track the latest
+commit (docs/decisions/0005); the validator warns about that, and --strict
+would turn the warning into a failure. Every other warning still fails.
+"""
+
+import subprocess
+import sys
+
+TARGETS = (".", ".claude-plugin/plugin.json")
+ALLOWED_WARNING = "version: No version specified"
+
+
+def main() -> int:
+    failed = False
+    for target in TARGETS:
+        result = subprocess.run(["claude", "plugin", "validate", target], capture_output=True, encoding="utf-8")
+        output = result.stdout + result.stderr
+        findings = [line.strip().lstrip("❯").strip() for line in output.splitlines() if line.strip().startswith("❯")]
+        unexpected = [finding for finding in findings if ALLOWED_WARNING not in finding]
+        if result.returncode != 0 or unexpected:
+            print(output, file=sys.stderr)
+            failed = True
+        else:
+            print(f"{target}: valid")
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
