@@ -16,6 +16,14 @@ A collection of agent skills, shipped as the plugin `pq` to Claude Code and Code
 - Leave `version` out of every manifest: installers then track the latest commit on `main` ([why](docs/decisions/0005-no-versions.md)). [CONTRIBUTING.md](CONTRIBUTING.md) covers the pull request flow.
 - Keep `plugin.json` out of the repository root: Codex would truncate every skill to 8,000 bytes ([why](docs/decisions/0003-no-root-plugin-json.md)).
 
+## Windows
+
+CI runs the gate on Windows too ([why](docs/decisions/0008-windows-support.md)), so keep every file working there:
+
+- Write regular files, never symlinks: Git for Windows checks a symlink out as a file holding its target path.
+- Start a Python check script with the `#!/usr/bin/env -S uv run --script` shebang; mise reads it on Windows, where `python3` is often missing or a Microsoft Store placeholder.
+- Write task and hook commands as one program and its arguments; on Windows they run through `cmd.exe`.
+
 ## Scaffold source
 
 [pq-scaffold-skills-repo](skills/pq-scaffold-skills-repo/SKILL.md) builds new repositories by copying this one from `main` and editing the copy per [its choices table](skills/pq-scaffold-skills-repo/references/choices.md). When a change adds, removes, or renames a repository file, or moves text the table names, update the table in the same change.

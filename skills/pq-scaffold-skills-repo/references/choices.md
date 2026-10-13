@@ -15,8 +15,8 @@ Apply these whatever the answers:
    - "https://github.com/paoloq" → the author URL, only where a `"` follows it, which is in the manifests' `url` fields; matching that quote leaves alone an owner whose name starts with `paoloq`.
    - "paoloq/skills" → `<owner>/<repo>`.
    - "Paolo Arduin's agent skills." → the description, then "Paolo Arduin" → the author.
-   - Every whole word "pq" → the plugin name; it names the plugin, the marketplace, and the skill prefix. Use `perl -pi -e 's/\bpq\b/<name>/g'` through `find . -type f -not -path './.git/*'`, so the `CLAUDE.md` symlink stays a link; macOS `sed` ignores `\b`.
-   - "2026-10-12" in `docs/decisions/` → today, and "Copyright (c) 2026" in `LICENSE` → this year.
+   - Every whole word "pq" → the plugin name; it names the plugin, the marketplace, and the skill prefix. Match it as a whole word, as the regex `\bpq\b` does; macOS `sed` ignores `\b`.
+   - Every record's `date:` in `docs/decisions/` → today, leaving the placeholder in `adr-template.md`, and "Copyright (c) 2026" in `LICENSE` → this year.
 2. Delete the "## Scaffold source" section of `AGENTS.md`; it describes this wizard's source, not the new repository.
 3. After the answers' edits, renumber every list they shortened and repair any sentence a deleted clause left broken.
 
@@ -45,7 +45,7 @@ No:
 - In `README.md`, delete the "Claude Code:" line and the code block under it, and under "## Update" the paragraph that starts "Claude Code updates only" and the code block under it.
 - In `docs/decisions/0001-…`, delete the consequence that starts "Bad, because Claude names plugin skills".
 - In `docs/decisions/0005-…`, delete the sentence "A `version` in `plugin.json` keeps Claude Code users on that version until someone changes the string." and the consequence that starts "Bad, because `claude plugin validate` warns".
-- In `docs/decisions/0007-…`, delete "The repository root is also the plugin root, where `claude plugin validate --strict` rejects a regular `CLAUDE.md` file. ", and change "because the symlink passes strict validation where the import file fails, and" → because.
+- In `docs/decisions/0007-…`, delete ", and `claude plugin validate` warns about a `CLAUDE.md` at the plugin root".
 - Apply [One agent dropped](#one-agent-dropped) for Claude Code, unless the Codex plugin is off too.
 
 ## Codex plugin
@@ -106,34 +106,48 @@ Spec keys only:
 
 Pitch: mise installs pinned versions of every tool and runs all the checks with one command, the same way on a laptop and in CI.
 
-Default: mise pins the tools and runs the checks as tasks, and `mise run check` is the gate. **Open**: the gate becomes the named tool's command that runs every `mise-tasks/check/*` script and the workflow linter. When the user also drops mise for pinning tools, have the named tool install them, or list them in the README's "## Development" section. Its record is 0006.
+Default: mise pins the tools and runs the checks as tasks, and `mise run check` is the gate. **Open**: the gate becomes the named tool's command that runs every `mise-tasks/check/*` script and `hk check --all`, or the workflow linter itself when hk goes. When the user also drops mise for pinning tools, have the named tool install them, or list them in the README's "## Development" section. Its record is 0006.
 
 ## Git hooks
 
-Pitch: before each commit, the hook runs the same checks as CI and rejects a commit message that is not a Conventional Commit, so problems surface before a push. Without it, they surface in CI.
+Pitch: before each commit, the hook runs the same checks as CI and rejects a commit message that is not a Conventional Commit, so problems surface before a push. Without it, the checks surface in CI, and the hk linters for merge-conflict markers, final newlines, and trailing whitespace go away.
 
-Default: hk runs `mise run check` before each commit. **Open**: the named tool runs the gate before each commit, and checks commit messages against Conventional Commits. Its record is 0006.
+Default: hk runs `mise run check` before each commit, and hosts the linters in `hk.pkl`, such as the workflow linter, which the gate runs through the `check:lint` task. **Open**: the named tool runs the gate before each commit, and checks commit messages against Conventional Commits; the linters move to it, or to mise tasks. Its record is 0006.
 
 None:
 - Delete `hk.pkl`, and the `hk` tool in `mise.toml`.
+- In `mise.toml`, replace the `[tasks."check:lint"]` table with a `[tasks."check:workflows"]` table whose `run` is `jactionlint` and whose description is "Lint the GitHub Actions workflows".
+- Tell the user, in the round that raises it, that the merge-conflict, final-newline, and trailing-whitespace linters go with hk; only the workflow linter moves to mise.
 - In `README.md`, delete the line "mise exec -- hk install".
 - In `CONTRIBUTING.md`, replace the step that starts "Commit with" → Commit with [Conventional Commits](https://www.conventionalcommits.org) messages.
 - In `AGENTS.md`, change "the hk pre-commit hook and CI run it too" → CI runs it too.
+- In `AGENTS.md`, change "Write task and hook commands" → Write task commands.
 - In `docs/decisions/0006-…`, retitle → mise runs the tasks, keeping its file name, and change "locally, before a commit, and in CI" → locally and in CI; its options stay, since they compare task runners.
 
 ## CI
 
 Pitch: every push and pull request runs the checks, and the branch rule blocks a merge until they pass.
 
-Default: GitHub Actions, through `.github/workflows/ci.yml`, runs the gate on every push and pull request to `main`. **Open**: the named CI runs the gate on the same events. With a CI other than GitHub Actions, skip [Workflow linter](#workflow-linter) and apply its None, and drop the whole `required_status_checks` rule from the ruleset in [GitHub settings](#github-settings), since GitHub no longer receives the `check` job.
+Default: GitHub Actions, through `.github/workflows/ci.yml`, runs the gate on every push and pull request to `main`; a final job named `check` passes only when every gate run passes, so the ruleset requires that one job. **Open**: the named CI runs the gate on the same events and operating systems. With a CI other than GitHub Actions, skip [Workflow linter](#workflow-linter) and apply its None, and drop the whole `required_status_checks` rule from the ruleset in [GitHub settings](#github-settings), since GitHub no longer receives the `check` job.
 
 ## Workflow linter
 
 Pitch: catches mistakes in the CI workflow files, such as a wrong action input or an unsafe permission, before they run.
 
-Default: jactionlint lints the GitHub Actions workflows as the `check:workflows` task. **Open**: the named linter runs as that task.
+Default: jactionlint lints the GitHub Actions workflows as the `jactionlint` step in `hk.pkl`'s `linters`, which `mise run check` runs through `hk check --all`. **Open**: the named linter replaces that step, through hk's builtin for it when one exists, else as a `check` command; when hk is gone, it runs as the `check:workflows` task.
 
-None: delete the `[tasks."check:workflows"]` table and the `jactionlint` tool from `mise.toml`.
+None: delete the `["jactionlint"]` line from `hk.pkl`, or the `[tasks."check:workflows"]` table from `mise.toml` when hk is gone, and the `jactionlint` tool from `mise.toml`.
+
+## Windows support
+
+Pitch: contributors on Windows get the same checks, and CI proves it on a Windows runner for every pull request. Without it, CI runs on Linux only and finishes sooner, and Windows may break unnoticed.
+
+Default: yes. CI runs the gate on `ubuntu-latest` and `windows-latest`. The repository's other Windows fixes, such as LF endings and no symlinks, stay either way, since they cost nothing elsewhere.
+
+No:
+- In `.github/workflows/ci.yml`, change "os: [ubuntu-latest, windows-latest]" → os: [ubuntu-latest]. With a CI other than GitHub Actions, run that CI on Linux only.
+- In `mise.toml`, delete the `PYTHONUTF8` line and the comment above it.
+- In `AGENTS.md`, under "## Windows", replace the line that starts "CI runs the gate on Windows too" → Keep every file working on Windows, should the repository support it later:
 
 ## Decision records
 
@@ -143,7 +157,7 @@ Show: the title of each record in the source's `docs/decisions/`, rewritten for 
 
 Default: MADR records in `docs/decisions/`, updated to match these answers.
 
-Choices map to records: the plugins to 0002, the prefix to 0001, frontmatter to 0004. When such an answer differs from the default, edit its record in place, since the new repository has no history to supersede:
+Choices map to records: the plugins to 0002, the prefix to 0001, frontmatter to 0004, Windows support to 0008. When such an answer differs from the default, edit its record in place, since the new repository has no history to supersede:
 - Retitle it after the chosen option, rename its file to match, and fix links to the old name.
 - List the chosen option under "Considered Options", adding it when missing, and keep the rejected default there.
 - Rewrite "Chosen option" with the user's reason, and edit or delete any context sentence or consequence that no longer holds.

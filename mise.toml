@@ -1,16 +1,18 @@
-min_version = "2026.10.7"
+min_version = "2026.10.8"
 
 [settings]
 lockfile = true
 
-# read by mise-tasks/check/skills; an empty value turns the rule off
 [env]
+# Python on Windows writes pipes in the locale encoding unless UTF-8 mode is on
+PYTHONUTF8 = "1"
+# read by mise-tasks/check/skills; an empty value turns the rule off
 SKILL_PREFIX = "pq-"
 SKILL_INVOCATION_KEY = "disable-model-invocation"
 
 [tools]
 uv = "0.13"
-hk = "2.5.0"
+hk = "2.6.0"
 claude-code = "2.1.296"
 jactionlint = "2.1.0"
 
@@ -18,6 +20,6 @@ jactionlint = "2.1.0"
 description = "Run every check that CI runs"
 depends = ["check:*"]
 
-[tasks."check:workflows"]
-description = "Lint the GitHub Actions workflows"
-run = "jactionlint"
+[tasks."check:lint"]
+description = "Run the hk linters on every file"
+run = "hk check --all"

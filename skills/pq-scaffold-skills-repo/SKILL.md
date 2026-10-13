@@ -32,16 +32,15 @@ Done when the target qualifies, or you have stopped.
 
 ## 2. Fetch the source
 
-Clone `main` of paoloq/skills, which takes changes only through pull requests that pass CI, into a new temporary folder:
+Create a new, empty folder whose name starts with `pq-scaffold.` in the system's temporary directory, using the shell you have, such as `mktemp -d` in a POSIX shell. Shell variables do not survive between commands, so write its path literally in every later command; this document calls it the source folder.
+
+Clone `main` of paoloq/skills, which takes changes only through pull requests that pass CI, into the source folder:
 
 ```sh
-source_dir=$(mktemp -d /tmp/pq-scaffold.XXXXXX) && echo "$source_dir"
-git clone --quiet --depth 1 https://github.com/paoloq/skills "$source_dir"
+git clone --quiet --depth 1 https://github.com/paoloq/skills <source folder>
 ```
 
-Shell variables do not survive between commands, so write the printed path literally in every later command; this document calls it the source folder.
-
-When the user names a local clone of paoloq/skills instead, run only the `mktemp` line, then copy the clone's working tree into the source folder without its top-level `.git`, a folder in a clone and a file in a worktree. Tell the user in one line that uncommitted work in that folder is included.
+When the user names a local clone of paoloq/skills instead, copy the clone's working tree into the source folder without its top-level `.git`, a folder in a clone and a file in a worktree. Tell the user in one line that uncommitted work in that folder is included.
 
 Done when every file and every quoted source text that [references/choices.md](references/choices.md) names exists in the source folder. When one is missing, the table is out of date: clean up (step 7), stop, and tell the user.
 
@@ -59,16 +58,20 @@ Done when the user has replied `ok`, or any plain yes, to the summary.
 
 ## 4. Write the files
 
-1. Copy the source folder into the target, except the top-level `/.git`, `/skills`, `/mise.lock`, and `/.mise`. Anchor each exclusion to the top level, as rsync's `--exclude=/skills` does, so `mise-tasks/check/skills` is copied. Keep symlinks as symlinks: `CLAUDE.md` must stay a link to `AGENTS.md`, because `claude plugin validate --strict` rejects a regular file there.
+1. Copy the source folder into the target, except the top-level `/.git`, `/skills`, `/mise.lock`, and `/.mise`. Exclude them at the top level only, so `mise-tasks/check/skills` is copied.
 2. Apply "Every scaffold" in the table, then each answer's edits, including the decision records it changes.
 
-Done when every edit "Every scaffold" and the answers call for is applied, and a search of the target outside `.git` finds only the user's own values for `paoloq`, `Paolo Arduin`, the whole word `pq`, and `2026-10-12`, and no "## Scaffold source" heading.
+Done when every edit "Every scaffold" and the answers call for is applied, and a search of the target outside `.git` finds:
+
+- only the user's own values for `paoloq`, `Paolo Arduin`, and the whole word `pq`;
+- today in every record's `date:` in `docs/decisions/`;
+- no "## Scaffold source" heading.
 
 ## 5. Verify
 
 In the target, set up the chosen tools and run the gate. With the defaults: confirm that `mise --version` is at least the `min_version` in `mise.toml`, then run `mise trust`, `mise install`, `mise lock`, `mise exec -- hk install` when hooks stay, and `mise run check`; `mise install` writes `mise.lock` for this machine only, and `mise lock` adds the other platforms, such as the Linux one CI runs on. With another tool, run its own install and gate commands. When a check fails in a generated file, fix that file; the checks encode the answers.
 
-Done when the gate passes and, while mise stays, `mise.lock` lists `linux-x64`. When a chosen tool is missing or too old, the network fails, or a failure lies outside the generated files, clean up (step 7), stop, and tell the user what failed.
+Done when the gate passes and, while mise stays, `mise.lock` lists `linux-x64`, and `windows-x64` when Windows support stays. When a chosen tool is missing or too old, the network fails, or a failure lies outside the generated files, clean up (step 7), stop, and tell the user what failed.
 
 ## 6. Apply GitHub settings
 
