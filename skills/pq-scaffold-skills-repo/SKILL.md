@@ -6,17 +6,27 @@ disable-model-invocation: true
 
 # Scaffold a skills repository
 
-Build a skills collection by copying paoloq/skills, itself a working collection, and tailoring the copy to the user's answers. [references/choices.md](references/choices.md) lists every choice with its default, its supported alternatives, and the exact edits each answer makes. Offer only those alternatives: when the user wants another, such as a different task runner or release tool, say the wizard does not support it and keep the default.
+Build a skills collection by copying paoloq/skills, itself a working collection, and tailoring the copy to the user's answers. [references/choices.md](references/choices.md) lists every choice with its default, its supported alternatives, and the exact edits each answer makes. Offer the alternatives it lists; a choice the table marks **open** also takes any tool the user names.
+
+## Voice
+
+Talk like a friendly, brief setup wizard about the user's new repository. The copied source and the table's replacements are how you build it, so they stay behind the scenes.
+
+- Each step speaks once, when it is done, opening with its badge; when one reply covers several steps, their parts follow the step order: 🔍 Checking the folder, 🎒 Getting ready, 🎤 Interview, 🛠️ Building, ✅ Checking, ⚙️ GitHub, 🧹 Tidying up, 🚀 All set.
+- A progress note while you work is one badge line about the user's repository, such as "🛠️ Building your plugin files…" or "✅ Running the checks…".
+- Name what comes later by what it does, such as "the GitHub settings", since the user never sees these steps' numbers.
+- Mark every recommended answer with ⭐.
 
 ## 1. Confirm the target
 
-The target is the current directory unless the user names another. It qualifies when all of these hold:
+The target is the current directory unless the user names another. It qualifies when both of these hold:
 
 - It is a Git repository; when it is not, offer `git init -b main`.
-- Its current branch is `main`, which the workflows and docs assume; when the repository has no commits yet, offer `git branch -m main`.
-- It holds nothing beyond `.git`, `README.md`, `LICENSE`, and `.gitignore`. When `README.md` or `LICENSE` exists, tell the user the scaffold replaces it.
+- Its working tree holds nothing beyond `.git`, `README.md`, `LICENSE`, and `.gitignore`. When `README.md` or `LICENSE` exists, tell the user the scaffold replaces it.
 
-When it holds anything else, such as `skills/` or `mise.toml`, or has commits on another branch, stop and tell the user this wizard scaffolds new repositories only.
+Any branch and any history are fine: the scaffold can land on a feature branch through a pull request. The workflows and the ruleset assume the repository's default branch is `main`; when the remote's default branch, from `git ls-remote --symref origin HEAD`, is another one, tell the user.
+
+When the working tree holds anything else, such as `skills/` or `mise.toml`, stop and tell the user this wizard scaffolds new repositories only.
 
 Done when the target qualifies, or you have stopped.
 
@@ -31,21 +41,21 @@ git clone --quiet --depth 1 https://github.com/paoloq/skills "$source_dir"
 
 Shell variables do not survive between commands, so write the printed path literally in every later command; this document calls it the source folder.
 
-When the user names a local clone of paoloq/skills instead, run only the `mktemp` line, then copy the clone's working tree into the source folder without its top-level `.git`, a folder in a clone and a file in a worktree. Tell the user that uncommitted, untracked, and ignored files come along.
+When the user names a local clone of paoloq/skills instead, run only the `mktemp` line, then copy the clone's working tree into the source folder without its top-level `.git`, a folder in a clone and a file in a worktree. Tell the user in one line that uncommitted work in that folder is included.
 
 Done when every file and every quoted source text that [references/choices.md](references/choices.md) names exists in the source folder. When one is missing, the table is out of date: clean up (step 7), stop, and tell the user.
 
 ## 3. Interview the user
 
-Grill the user through [references/choices.md](references/choices.md) in its order, one choice per question:
+Interview the user from [references/choices.md](references/choices.md) in rounds, in plain chat. Each round is one message: the round's table written out in full, then its one-line question as the last line, ending your turn so the user reads the table and replies. A question picker would hide the table behind it, so the rounds use chat replies.
 
-- Say what the choice decides, put the default first as the recommendation, and offer only its supported alternatives.
-- Ask a follow-up value, such as a licence identifier or an email address, in the same question.
-- Skip a choice an earlier answer settles.
+1. **🎤 Identity:** a table of the identity values with your proposals; ask the user to reply `ok` or say what to change.
+2. **⚡ Express:** a table of every remaining choice in the table's order, one row each: number, choice, ⭐ answer in a few plain words, what it gives the user from its pitch in one line, and its alternatives, ending with "or another tool" for an open choice. Ask the user to reply `ok` to take them all, name the numbers to change, or say "one by one". For "one by one", ask each choice in its own short message, numbered as "🎤 3/14 · Skill name prefix", opening with its pitch and its **Show** table, when it has one, so the user can judge before answering.
+3. **🎤 Summary:** a table with one row per identity value and one row per choice, in the table's order; ask the user to reply `ok` to build it or say what to change.
 
-Then show every answer in one summary and ask the user to confirm or change it.
+Ask a follow-up value, such as a licence identifier or an email address, in the round that raises it, and skip a choice an earlier answer settles.
 
-Done when the user has confirmed the summary.
+Done when the user has replied `ok`, or any plain yes, to the summary.
 
 ## 4. Write the files
 
@@ -56,9 +66,9 @@ Done when every edit "Every scaffold" and the answers call for is applied, and a
 
 ## 5. Verify
 
-In the target, confirm that `mise --version` is at least the `min_version` in `mise.toml`, then run `mise trust`, `mise install`, `mise lock`, `mise exec -- hk install` when hooks stay, and `mise run check`. `mise install` writes `mise.lock` for this machine only; `mise lock` adds the other platforms, such as the Linux one CI runs on. When a check fails in a generated file, fix that file; the checks encode the answers.
+In the target, set up the chosen tools and run the gate. With the defaults: confirm that `mise --version` is at least the `min_version` in `mise.toml`, then run `mise trust`, `mise install`, `mise lock`, `mise exec -- hk install` when hooks stay, and `mise run check`; `mise install` writes `mise.lock` for this machine only, and `mise lock` adds the other platforms, such as the Linux one CI runs on. With another tool, run its own install and gate commands. When a check fails in a generated file, fix that file; the checks encode the answers.
 
-Done when `mise run check` passes and `mise.lock` lists `linux-x64`. When mise is missing or too old, the network fails, or a failure lies outside the generated files, clean up (step 7), stop, and tell the user what failed.
+Done when the gate passes and, while mise stays, `mise.lock` lists `linux-x64`. When a chosen tool is missing or too old, the network fails, or a failure lies outside the generated files, clean up (step 7), stop, and tell the user what failed.
 
 ## 6. Apply GitHub settings
 

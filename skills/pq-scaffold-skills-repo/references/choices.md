@@ -4,6 +4,8 @@ The choices, in the order to ask them, with the edits each answer makes to the t
 
 - Text in quotes is source text to find; text after → replaces it. Where a quote holds `pq`, find the plugin name instead, since [Every scaffold](#every-scaffold) runs first.
 - Steps of `CONTRIBUTING.md` are named by their opening words, which stay stable while other edits delete steps.
+- A choice marked **open** also takes any tool the user names; follow [Another tool](#another-tool).
+- A choice's **Pitch** is what the user reads when deciding: what the default gives them, and what they lose without it. Its **Show**, when it has one, names what to put in front of the user as a table when asking it.
 
 ## Every scaffold
 
@@ -20,19 +22,21 @@ Apply these whatever the answers:
 
 ## Identity
 
-Ask these together, proposing values from the target:
+Ask these together as the new repository's identity, proposing values from the target:
 
 | Value | Proposal |
 |---|---|
 | Owner and repository | `git remote get-url origin`, else ask |
 | Plugin name | ask; suggest the author's initials |
-| Author | `git config user.name`, else ask |
+| Author | `git config user.name`, else `gh api user --jq .name`, else ask |
 | Author URL | `gh api user --jq .html_url`, else `https://github.com/<owner>` |
 | Description | `<author>'s agent skills.` |
 
 The plugin name takes lowercase letters, digits, and hyphens, and cannot start with `claude-` or `anthropic-`, which Claude Code reserves. It also names the marketplace and, by default, prefixes every skill, so keep it short.
 
 ## Claude Code plugin
+
+Pitch: Claude Code users install every skill at once with `/plugin install` and update it with one command. Without it, they install through `npx skills`.
 
 Default: yes. Ships `.claude-plugin/` so Claude Code installs the collection with `/plugin install`.
 
@@ -45,6 +49,8 @@ No:
 - Apply [One agent dropped](#one-agent-dropped) for Claude Code, unless the Codex plugin is off too.
 
 ## Codex plugin
+
+Pitch: Codex users install every skill at once with `codex plugin add` and update it with one command. Without it, they install through `npx skills`.
 
 Default: yes. Ships `.codex-plugin/` and `.agents/plugins/` so Codex installs the collection with `codex plugin add`.
 
@@ -78,6 +84,8 @@ Apply both "No" lists above, without [One agent dropped](#one-agent-dropped), th
 
 ## Skill name prefix
 
+Pitch: every skill name starts with the plugin name, such as `ak-review`, so it cannot clash with a same-named skill from another collection once installed side by side. Without it, names are shorter but can collide.
+
 Default: `<plugin name>-` on every skill, so names stay unique where installers drop the plugin namespace.
 
 None:
@@ -86,15 +94,25 @@ None:
 
 ## Frontmatter
 
+Pitch: a skill can be made typed-only, so it runs when the user types its name and costs no context in sessions that never use it; such a skill cannot be uploaded to claude.ai. Spec keys only keeps every skill uploadable anywhere, but each one can then fire on its own.
+
 Default: the six spec keys plus `disable-model-invocation`, so a skill can fire only when typed.
 
 Spec keys only:
 - In `mise.toml`, set `SKILL_INVOCATION_KEY = ""`.
 - In `AGENTS.md`, change "spec keys plus `disable-model-invocation`" → spec keys, keeping its link; delete the line that starts "A skill that fires only when the user types its name"; and delete the sentence that starts "A user-invoked skill's `description`".
 
+## Task runner
+
+Pitch: mise installs pinned versions of every tool and runs all the checks with one command, the same way on a laptop and in CI.
+
+Default: mise pins the tools and runs the checks as tasks, and `mise run check` is the gate. **Open**: the gate becomes the named tool's command that runs every `mise-tasks/check/*` script and the workflow linter. When the user also drops mise for pinning tools, have the named tool install them, or list them in the README's "## Development" section. Its record is 0006.
+
 ## Git hooks
 
-Default: hk runs `mise run check` before each commit.
+Pitch: before each commit, the hook runs the same checks as CI and rejects a commit message that is not a Conventional Commit, so problems surface before a push. Without it, they surface in CI.
+
+Default: hk runs `mise run check` before each commit. **Open**: the named tool runs the gate before each commit, and checks commit messages against Conventional Commits. Its record is 0006.
 
 None:
 - Delete `hk.pkl`, and the `hk` tool in `mise.toml`.
@@ -103,7 +121,25 @@ None:
 - In `AGENTS.md`, change "the hk pre-commit hook and CI run it too" → CI runs it too.
 - In `docs/decisions/0006-…`, retitle → mise runs the tasks, keeping its file name, and change "locally, before a commit, and in CI" → locally and in CI; its options stay, since they compare task runners.
 
+## CI
+
+Pitch: every push and pull request runs the checks, and the branch rule blocks a merge until they pass.
+
+Default: GitHub Actions, through `.github/workflows/ci.yml`, runs the gate on every push and pull request to `main`. **Open**: the named CI runs the gate on the same events. With a CI other than GitHub Actions, skip [Workflow linter](#workflow-linter) and apply its None, and drop the whole `required_status_checks` rule from the ruleset in [GitHub settings](#github-settings), since GitHub no longer receives the `check` job.
+
+## Workflow linter
+
+Pitch: catches mistakes in the CI workflow files, such as a wrong action input or an unsafe permission, before they run.
+
+Default: jactionlint lints the GitHub Actions workflows as the `check:workflows` task. **Open**: the named linter runs as that task.
+
+None: delete the `[tasks."check:workflows"]` table and the `jactionlint` tool from `mise.toml`.
+
 ## Decision records
+
+Pitch: [MADR](https://adr.github.io/madr/) (Markdown Architectural Decision Records) keeps one short file per lasting choice: the problem, the options weighed, the one chosen and its downsides. The repository starts with records for the setup choices, rewritten to match your answers, so you and later agents know why something is set up a certain way before changing it. Without them, the reasons live only in commit messages.
+
+Show: the title of each record in the source's `docs/decisions/`, rewritten for the answers given so far.
 
 Default: MADR records in `docs/decisions/`, updated to match these answers.
 
@@ -123,6 +159,10 @@ None:
 
 ## Pull request template
 
+Pitch: a pull request description form written for AI agents. Squash merges turn it into the commit message, so `main`'s history stays readable. Without it, descriptions are free-form.
+
+Show: each `##` section of the source's `.github/pull_request_template.md`, with what its comment asks for in a few words.
+
 Default: `.github/pull_request_template.md`, written for agent authors.
 
 None:
@@ -130,6 +170,8 @@ None:
 - In the `CONTRIBUTING.md` step that starts "Push and open", delete ", with a body written from [the pull request template](.github/pull_request_template.md)" and the sentence that starts "`gh pr create --body`".
 
 ## Licence
+
+Pitch: the terms under which others may use, change, and share the skills. MIT allows all of it with attribution and no warranty.
 
 Default: the identifier of the target's existing `LICENSE` when it has one, matched against the SPDX licence texts and confirmed with the user; else MIT.
 
@@ -139,6 +181,8 @@ When the identifier is not MIT:
 
 ## Outside pull requests
 
+Pitch: whether `CONTRIBUTING.md` invites pull requests from other people, or states that the collection is maintained privately.
+
 Default: not accepted.
 
 Accepted, in `CONTRIBUTING.md`:
@@ -147,14 +191,27 @@ Accepted, in `CONTRIBUTING.md`:
 
 ## Security reports
 
+Pitch: where someone reports a vulnerability privately: GitHub's private reporting form, an email address, or nowhere.
+
 Default: GitHub private vulnerability reporting.
 
 - Email: in `CONTRIBUTING.md`, replace the sentence under "## Security" → Report a vulnerability privately to <email>, never in an issue or pull request.
 - None: delete the "## Security" section.
 
+## Another tool
+
+When the user names a tool for an open choice:
+
+1. Tell the user, in the round that raises it, that the wizard has not tested that tool and will set it up to do the default's job.
+2. Replace the default's files with the named tool's own setup, doing the same job on the same triggers, and swap the default's entry in `mise.toml` for the named tool's while mise stays.
+3. Replace every mention of the default and its commands across `README.md`, `CONTRIBUTING.md`, `AGENTS.md`, `.github/pull_request_template.md`, the remaining workflows, and `hk.pkl` when it stays.
+4. When the decision records stay, rewrite the record the choice names, or add one from `docs/decisions/adr-template.md` when it names none.
+
+Step 5 then installs and runs the named tool instead of the default.
+
 ## GitHub settings
 
-Not asked in step 3; step 6 and step 8 propose these. When the repository does not exist on GitHub yet, or `gh auth status` fails, list the settings for the user to apply later instead. When GitHub rejects a setting for the repository's plan or visibility, list it the same way.
+Not asked in step 3; step 6 and step 8 propose these. When the repository does not exist on GitHub yet, or `gh auth status` fails, list the settings for the user to apply later instead: one plain line each, with the commands offered on request. When GitHub rejects a setting for the repository's plan or visibility, list it the same way.
 
 In step 6:
 
