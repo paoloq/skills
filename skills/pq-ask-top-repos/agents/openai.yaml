@@ -1,0 +1,3 @@
+interface:
+  display_name: "Ask Top Repos"
+  short_description: "Survey how top open-source repos handle a convention, with cited evidence"
