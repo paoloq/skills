@@ -18,7 +18,8 @@ Apply these whatever the answers:
    - Every whole word "pq" → the plugin name; it names the plugin, the marketplace, and the skill prefix. Match it as a whole word, as the regex `\bpq\b` does; macOS `sed` ignores `\b`.
    - Every record's `date:` in `docs/decisions/` → today, leaving the placeholder in `adr-template.md`, and "Copyright (c) 2026" in `LICENSE` → this year.
 2. Delete the "## Scaffold source" section of `AGENTS.md`; it describes this wizard's source, not the new repository.
-3. After the answers' edits, renumber every list they shortened and repair any sentence a deleted clause left broken.
+3. Delete the "## Skills" section of `README.md`; it lists this source's skills, which the copy leaves out, and the target's first skill adds it back.
+4. After the answers' edits, renumber every list they shortened and repair any sentence a deleted clause left broken.
 
 ## Identity
 
@@ -76,7 +77,7 @@ Apply both "No" lists above, without [One agent dropped](#one-agent-dropped), th
   - Delete the line "Pick one route per agent; installing through both gives you every skill twice."
   - "Any other agent:" → Any agent:, in both sections.
   - "The plugin has no versions, so every merge to `main` is an update, and it reaches you when you update." → Every merge to `main` reaches you when you update.
-- In `AGENTS.md`, "shipped as the plugin `pq` to Claude Code and Codex and as plain skills to `npx skills`." → shipped as plain skills to `npx skills`; [CONTRIBUTING.md](CONTRIBUTING.md) covers the pull request flow., and delete the "## Manifests" section.
+- In `AGENTS.md`, "shipped as the plugin `pq` to Claude Code and Codex and as plain skills to `npx skills`." → shipped as plain skills to `npx skills`.
 - In `CONTRIBUTING.md`, "The plugins carry no version, so a merge reaches users" → A merge reaches users.
 - Delete `mise-tasks/check/manifests`, `docs/decisions/0002-…`, and `docs/decisions/0003-…`; with no plugin manifest, nothing is left for them to guard.
 - In `docs/decisions/0001-…`, drop ", one plugin" from both the option and the "Chosen option" quote, which must stay identical, and retitle → Flat skills with a shared name prefix. When the prefix is none too, retitle → Flat skills.
@@ -106,7 +107,7 @@ Spec keys only:
 
 Pitch: mise installs pinned versions of every tool and runs all the checks with one command, the same way on a laptop and in CI.
 
-Default: mise pins the tools and runs the checks as tasks, and `mise run check` is the gate. **Open**: the gate becomes the named tool's command that runs every `mise-tasks/check/*` script and `hk check --all`, or the workflow linter itself when hk goes. When the user also drops mise for pinning tools, have the named tool install them, or list them in the README's "## Development" section. Its record is 0006.
+Default: mise pins the tools and runs the checks as tasks, and `mise run check` is the gate. **Open**: the gate becomes the named tool's command that runs every `mise-tasks/check/*` script and `hk check --all`, or the workflow linter itself when hk goes. When the user also drops mise for pinning tools, have the named tool install them, or list them in the "## Set up" section of `CONTRIBUTING.md`. Its record is 0006.
 
 ## Git hooks
 
@@ -118,7 +119,7 @@ None:
 - Delete `hk.pkl`, and the `hk` tool in `mise.toml`.
 - In `mise.toml`, replace the `[tasks."check:lint"]` table with a `[tasks."check:workflows"]` table whose `run` is `jactionlint` and whose description is "Lint the GitHub Actions workflows".
 - Tell the user, in the round that raises it, that the merge-conflict, final-newline, and trailing-whitespace linters go with hk; only the workflow linter moves to mise.
-- In `README.md`, delete the line "mise exec -- hk install".
+- In `CONTRIBUTING.md`, delete the line "mise exec -- hk install".
 - In `CONTRIBUTING.md`, replace the step that starts "Commit with" → Commit with [Conventional Commits](https://www.conventionalcommits.org) messages.
 - In `AGENTS.md`, change "the hk pre-commit hook and CI run it too" → CI runs it too.
 - In `AGENTS.md`, change "Write task and hook commands" → Write task commands.
@@ -128,7 +129,7 @@ None:
 
 Pitch: every push and pull request runs the checks, and the branch rule blocks a merge until they pass.
 
-Default: GitHub Actions, through `.github/workflows/ci.yml`, runs the gate on every push and pull request to `main`; a final job named `check` passes only when every gate run passes, so the ruleset requires that one job. **Open**: the named CI runs the gate on the same events and operating systems. With a CI other than GitHub Actions, skip [Workflow linter](#workflow-linter) and apply its None, and drop the whole `required_status_checks` rule from the ruleset in [GitHub settings](#github-settings), since GitHub no longer receives the `check` job.
+Default: GitHub Actions, through `.github/workflows/ci.yml`, runs the gate on every push and pull request to `main`; a final job named `check` passes only when every gate run passes, so the ruleset requires that one job. **Open**: the named CI runs the gate on the same events and operating systems. With a CI other than GitHub Actions, delete the CI badge from the top of `README.md`, skip [Workflow linter](#workflow-linter) and apply its None, and drop the whole `required_status_checks` rule from the ruleset in [GitHub settings](#github-settings), since GitHub no longer receives the `check` job.
 
 ## Workflow linter
 
@@ -168,7 +169,7 @@ None:
 - Delete `docs/decisions/`.
 - In `AGENTS.md`, delete each link that starts " ([why](docs/decisions/", through its closing parenthesis, and the "## Decisions" section.
 - In `README.md`, ", [AGENTS.md](AGENTS.md) holds the authoring rules, and [docs/decisions/](docs/decisions/) records why the repository is set up this way." → and [AGENTS.md](AGENTS.md) holds the authoring rules.
-- In `CONTRIBUTING.md`, ", skill-authoring rules in [AGENTS.md](AGENTS.md), and the reasons behind the setup in [docs/decisions/](docs/decisions/)." → and skill-authoring rules in [AGENTS.md](AGENTS.md)., and delete " ([why](docs/decisions/0005-no-versions.md))".
+- In `CONTRIBUTING.md`, delete ", and the reasons behind the setup in [docs/decisions/](docs/decisions/)" and " ([why](docs/decisions/0005-no-versions.md))".
 - Delete the reference to `docs/decisions/` from each comment in `mise-tasks/check/manifests` and `mise-tasks/check/plugin`, where those files remain.
 
 ## Pull request template
@@ -192,6 +193,7 @@ Default: the identifier of the target's existing `LICENSE` when it has one, matc
 When the identifier is not MIT:
 - Replace `LICENSE` with the text at `https://raw.githubusercontent.com/spdx/license-list-data/main/text/<id>.txt`, or with the target's original `LICENSE` when the default came from it; when the fetch fails, ask the user for the licence text. Fill the copyright holder and year only when the text opens with a copyright line, as MIT and BSD do; keep other texts, such as Apache-2.0, verbatim, including their appendix placeholders.
 - Set the `license` field of each `plugin.json` to the identifier.
+- In `README.md`, "MIT License" → the licence's name.
 
 ## Outside pull requests
 

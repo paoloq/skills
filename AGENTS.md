@@ -1,6 +1,6 @@
 # pq skills
 
-A collection of agent skills, shipped as the plugin `pq` to Claude Code and Codex and as plain skills to `npx skills`. `mise run check` is the gate; the hk pre-commit hook and CI run it too.
+A collection of agent skills, shipped as the plugin `pq` to Claude Code and Codex and as plain skills to `npx skills`. `mise run check` is the gate; the hk pre-commit hook and CI run it too. [CONTRIBUTING.md](CONTRIBUTING.md) covers setup and the pull request flow.
 
 ## Skills
 
@@ -10,11 +10,7 @@ A collection of agent skills, shipped as the plugin `pq` to Claude Code and Code
 - A model-invoked skill's `description` is a context pointer loaded in every session: lead with what the skill does, then one trigger per distinct case. A user-invoked skill's `description` is a one-line summary for the human.
 - Write the body as ordered steps, each ending on a completion criterion the agent can check; push material only some cases need into a sibling file the step links.
 - Keep paths in a skill relative to its own folder.
-
-## Manifests
-
-- Leave `version` out of every manifest: installers then track the latest commit on `main` ([why](docs/decisions/0005-no-versions.md)). [CONTRIBUTING.md](CONTRIBUTING.md) covers the pull request flow.
-- Keep `plugin.json` out of the repository root: Codex would truncate every skill to 8,000 bytes ([why](docs/decisions/0003-no-root-plugin-json.md)).
+- List each skill in the README's "## Skills" section with a one-line purpose, adding the section with the first skill.
 
 ## Windows
 
