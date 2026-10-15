@@ -1,8 +1,18 @@
 # Contributing
 
-How a change reaches `main` and, from there, users. Setup lives in the [README](README.md), skill-authoring rules in [AGENTS.md](AGENTS.md), and the reasons behind the setup in [docs/decisions/](docs/decisions/).
+How to set up the repository, and how a change reaches `main` and, from there, users. Skill-authoring rules live in [AGENTS.md](AGENTS.md), and the reasons behind the setup in [docs/decisions/](docs/decisions/).
 
 This collection takes no outside pull requests.
+
+## Set up
+
+The repository uses [mise](https://mise.jdx.dev) for its tools and checks:
+
+```sh
+mise install
+mise exec -- hk install
+mise run check
+```
 
 ## Make a change
 

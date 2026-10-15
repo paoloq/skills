@@ -1,10 +1,19 @@
 # pq skills
 
+[![CI](https://github.com/paoloq/skills/actions/workflows/ci.yml/badge.svg)](https://github.com/paoloq/skills/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/paoloq/skills)](LICENSE)
+
 Paolo Arduin's agent skills. They ship as the plugin `pq` for Claude Code and Codex, and as plain skills for every agent [`npx skills`](https://github.com/vercel-labs/skills) supports.
+
+## Skills
+
+- [pq-ask-top-repos](skills/pq-ask-top-repos/SKILL.md): finds how top open-source projects handle a convention, with evidence.
+- [pq-curate-repo-docs](skills/pq-curate-repo-docs/SKILL.md): decides whether a fact belongs in your repository's docs, where, and how to word it.
+- [pq-scaffold-skills-repo](skills/pq-scaffold-skills-repo/SKILL.md): turns an empty repository into a skills collection like this one.
 
 ## Install
 
-Pick one route per agent; installing through both gives you every skill twice.
+> [!WARNING]
+> Pick one route per agent; installing through both gives you every skill twice.
 
 Claude Code:
 
@@ -51,14 +60,14 @@ Any other agent:
 npx skills update
 ```
 
-## Development
+## Contributing
 
-The repository uses [mise](https://mise.jdx.dev) for its tools and checks:
+[CONTRIBUTING.md](CONTRIBUTING.md) covers setup and making a change, [AGENTS.md](AGENTS.md) holds the authoring rules, and [docs/decisions/](docs/decisions/) records why the repository is set up this way.
 
-```sh
-mise install
-mise exec -- hk install
-mise run check
-```
+## Help
 
-[CONTRIBUTING.md](CONTRIBUTING.md) covers making a change, [AGENTS.md](AGENTS.md) holds the authoring rules, and [docs/decisions/](docs/decisions/) records why the repository is set up this way.
+Report a problem or ask a question in [GitHub issues](https://github.com/paoloq/skills/issues).
+
+## License
+
+Released under the [MIT License](LICENSE).

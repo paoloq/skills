@@ -1,0 +1,3 @@
+interface:
+  display_name: "Curate Repo Docs"
+  short_description: "Decide whether a repo doc change earns a line, where it lives, and how to word it"
