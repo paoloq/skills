@@ -32,6 +32,7 @@ List the doc homes this repository has, then put the fact in the narrowest one:
 | A rule a tool can check | That tool's configuration |
 | Why one piece of code looks wrong but is right | A comment beside that code |
 | How a user installs and uses the project or a package | Its README |
+| What an internal component is for and how to run it | That component's README |
 | How the parts fit together | An existing docs page, linked from the README |
 | How a contributor prepares, checks, and lands a change, development commands included | CONTRIBUTING |
 | Per-pull-request evidence | The pull request template |

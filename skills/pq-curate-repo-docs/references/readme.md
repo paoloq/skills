@@ -12,7 +12,7 @@ A README is the project's front door: what the project is, how to start using it
 
 ## Style
 
-A README is read by people deciding whether to use the project, so it should look inviting and scan at a glance.
+The root README is read by people deciding whether to use the project, so it should look inviting and scan at a glance.
 
 6. Open with a logo or banner, with light and dark variants when one would vanish on the other background.
 7. Follow it with one row of badges that report real status, such as CI, version, license, downloads, or chat.
@@ -21,6 +21,7 @@ A README is read by people deciding whether to use the project, so it should loo
 10. Put the single notice that matters most in a callout such as `> [!NOTE]` or `> [!TIP]`.
 11. Keep images in the repository, link them relatively, and give each one alt text.
 
-## Package READMEs
+## Package and component READMEs
 
-12. Give each separately published package a README on one template shared across the repository: its name, a one-line purpose, install, a docs link, and where to get help. An internal component gets none; its rules belong in a nested AGENTS.md.
+12. Give each package published to a package registry, such as PyPI, npm, or crates.io, a README on one template shared across the repository: its name, a one-line purpose, install, a docs link, and where to get help.
+13. Give an internal component, such as an unpublished workspace member or a service shipped only as a container image, a short README when a developer opening its folder needs orientation the code does not give: open by saying it is internal, then give its purpose, entry points, and how to run and test it. Its agent rules belong in its nested AGENTS.md.
