@@ -1,18 +1,33 @@
-<!-- This body becomes the squash commit message on main: replace every comment with your text, and leave no comment behind. -->
+<!-- This body becomes the squash commit message on main. Draft it only for a change an agent worked on; otherwise stop and tell the user this template requires one. Replace comments with your text until none remains, and delete each section or subsection that does not apply, except Agent. -->
 
 ## Why
 
-<!-- The problem or request this answers, and why this approach won over the alternatives you weighed. Two or three sentences. -->
+<!-- The problem or constraint, and why this approach won over the alternatives you weighed. -->
+
+### Root cause
+
+<!-- For a bug: the mechanism that produced it, and whether the fix removes it or works around it. -->
 
 ## What changed
 
-<!-- Behavior, design choices, and risks a reviewer cannot read from the diff. Leave out anything the diff already shows. -->
+<!-- Only what a reviewer cannot get from the diff: behavior, design choices, risk. -->
+
+## Non-goals
+
+<!-- What a reviewer could expect this change to do that it deliberately leaves out, each with its reason or follow-up. -->
 
 ## Verification
 
-<!-- Each command you ran and its observed result, `mise run check` at least; each install or session you tried in Claude Code or Codex; and what you could not verify, with the reason. A failed or skipped check stays listed here. -->
+<!-- Each command you ran (`mise run check` at least) and its observed result; for a skill change, each install or session you tried in Claude Code or Codex; what you could not verify, and why. A failed or skipped check stays listed. -->
 
 ## Agent
 
-- Harness: <!-- e.g. Claude Code 2.1.296, Codex CLI 0.162.1 -->
-- Model: <!-- The exact model ID when your context states one, e.g. claude-opus-5-5; otherwise the model family your context names. Report only what your context states. -->
+<!-- One block per distinct role, harness, and model among the agents that worked on this pull request, such as a coordinator and its workers, with an empty line between blocks. Fill each block from that agent's own record of what ran: its context, or for a worker its session log. -->
+
+**Role:** <!-- What the agent did, e.g. Coordinator -->
+**Harness:** <!-- Name and version, e.g. Claude Code 2.1.296 -->
+**Model:** <!-- Exact model ID, e.g. claude-opus-5-5 -->
+
+**Role:** <!-- e.g. Implementation -->
+**Harness:** <!-- e.g. Codex CLI 0.162.1 -->
+**Model:** <!-- e.g. claude-sonnet-5-5 -->
