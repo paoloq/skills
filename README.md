@@ -2,13 +2,15 @@
 
 [![CI](https://github.com/paoloq/skills/actions/workflows/ci.yml/badge.svg)](https://github.com/paoloq/skills/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/paoloq/skills)](LICENSE)
 
-Paolo Arduin's agent skills. They ship as the plugin `pq` for Claude Code and Codex, and as plain skills for every agent [`npx skills`](https://github.com/vercel-labs/skills) supports.
+Agent skills, shipped as the plugin `pq` for Claude Code and Codex, and as plain skills for every agent [`npx skills`](https://github.com/vercel-labs/skills) supports.
 
 ## Skills
 
-- [pq-ask-top-repos](skills/pq-ask-top-repos/SKILL.md): finds how top open-source projects handle a convention, with evidence.
-- [pq-curate-repo-docs](skills/pq-curate-repo-docs/SKILL.md): decides whether a fact belongs in your repository's docs, where, and how to word it.
-- [pq-scaffold-skills-repo](skills/pq-scaffold-skills-repo/SKILL.md): turns an empty repository into a skills collection like this one.
+| Skill | What it does |
+|---|---|
+| [pq-ask-top-repos](skills/pq-ask-top-repos/SKILL.md) | Finds how top open-source projects handle a convention, with evidence. |
+| [pq-curate-repo-docs](skills/pq-curate-repo-docs/SKILL.md) | Decides whether a fact belongs in your repository's docs, where, and how to word it. |
+| [pq-scaffold-skills-repo](skills/pq-scaffold-skills-repo/SKILL.md) | Turns an empty repository into a skills collection like this one. |
 
 ## Install
 
