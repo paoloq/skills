@@ -12,16 +12,22 @@ A README is the project's front door: what the project is, how to start using it
 
 ## Style
 
-The root README is read by people deciding whether to use the project, so it should look inviting and scan at a glance.
+Every root README should scan at a glance.
 
-6. Open with a logo or banner, with light and dark variants when one would vanish on the other background.
-7. Follow it with one row of badges that report real status, such as CI, version, license, downloads, or chat.
-8. Show the product when it is visual or claims speed: a screenshot, a short animation, or a benchmark chart.
-9. Near the top, list the highlights or the reasons to use it in a few short bullets.
-10. Put the single notice that matters most in a callout such as `> [!NOTE]` or `> [!TIP]`.
-11. Keep images in the repository, link them relatively, and give each one alt text.
+6. Show the project's live status, such as CI, build, or deploy, in one row of badges under the title.
+7. Put the single notice that matters most in a callout such as `> [!NOTE]` or `> [!TIP]`.
+8. Keep images in the repository, link them relatively, and give each one alt text.
+
+### Projects that seek outside users
+
+When the README must win users outside the team, such as for an open-source library or tool, its readers are deciding whether to adopt the project, so make it look inviting:
+
+9. Open with a logo or banner above the badge row, with light and dark variants when one would vanish on the other background.
+10. Add badges for version, license, downloads, or chat to that row.
+11. Show the product when it is visual or claims speed: a screenshot, a short animation, or a benchmark chart.
+12. Near the top, list the highlights or the reasons to use it in a few short bullets.
 
 ## Package and component READMEs
 
-12. Give each package published to a package registry, such as PyPI, npm, or crates.io, a README on one template shared across the repository: its name, a one-line purpose, install, a docs link, and where to get help.
-13. Give an internal component, such as an unpublished workspace member or a service shipped only as a container image, a short README when a developer opening its folder needs orientation the code does not give: open by saying it is internal, then give its purpose, entry points, and how to run and test it. Its agent rules belong in its nested AGENTS.md.
+13. Give each package published to a package registry, such as PyPI, npm, or crates.io, a README on one template shared across the repository: its name, a one-line purpose, install, a docs link, and where to get help.
+14. Give an internal component, such as an unpublished workspace member or a service shipped only as a container image, a short README when a developer opening its folder needs orientation the code does not give: open by saying it is internal, then give its purpose, entry points, and how to run and test it. Its agent rules belong in its nested AGENTS.md.
