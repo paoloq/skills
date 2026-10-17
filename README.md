@@ -1,4 +1,4 @@
-# pq skills
+# ⚡ Skillz
 
 [![CI](https://github.com/paoloq/skills/actions/workflows/ci.yml/badge.svg)](https://github.com/paoloq/skills/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/paoloq/skills)](LICENSE)
 
@@ -36,8 +36,6 @@ Any other agent:
 ```sh
 npx skills add paoloq/skills
 ```
-
-`npx skills add paoloq/skills --list` lists the skills without installing them.
 
 ## Update
 
