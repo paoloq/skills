@@ -13,7 +13,6 @@ SKILL_INVOCATION_KEY = "disable-model-invocation"
 [tools]
 uv = "0.13"
 hk = "2.6.0"
-claude-code = "2.1.296"
 jactionlint = "2.1.0"
 
 [tasks.check]

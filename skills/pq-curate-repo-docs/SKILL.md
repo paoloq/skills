@@ -1,6 +1,6 @@
 ---
 name: pq-curate-repo-docs
-description: Decides whether a repository doc change earns a line, where it lives, and how to word it. Applies before adding, editing, or deleting a repo's AGENTS.md, CLAUDE.md, README, CONTRIBUTING, coding standards, or decision record; when asked to record a rule or decision; and when a code change or rename makes a doc statement false. Not for skills, changelogs, docs sites, runbooks, or answering questions from the docs.
+description: Decides whether a repository doc change earns a line, where it lives, and how to word it. Applies before adding, editing, or deleting a repo's AGENTS.md, CLAUDE.md, README, CONTRIBUTING, or coding standards; when asked to record a rule; and when a code change or rename makes a doc statement false. Not for skills, changelogs, docs sites, runbooks, or answering questions from the docs.
 ---
 
 # Curate repo docs
@@ -37,13 +37,12 @@ List the doc homes this repository has, then put the fact in the narrowest one:
 | How a contributor prepares, checks, and lands a change, development commands included | CONTRIBUTING |
 | Per-pull-request evidence | The pull request template |
 | A review criterion no tool checks | The coding standards |
-| Why a lasting choice was made | A decision record |
 | A rule agents need on most tasks | The root AGENTS.md |
 | Rules that hold only for one component | That component's nested AGENTS.md |
 | Security reporting or code ownership | SECURITY.md or CODEOWNERS |
 | A repeatable procedure | A skill: hand it to a skill-authoring skill when one is installed; otherwise follow the repository's rules for skills |
 
-Extend an existing page or section before adding one, link to the home from elsewhere, and delete a superseded copy in the same change. When no existing home fits, propose creating one. When the repository shows no habit for a choice that is hard to reverse, such as a new file's name or place, survey it with the pq-ask-top-repos skill when it is installed, and otherwise ask the user. When the change states or contradicts a recorded decision, read the decision log first, and ask the user before contradicting an accepted one.
+Extend an existing page or section before adding one, link to the home from elsewhere, and delete a superseded copy in the same change. When no existing home fits, propose creating one. When the repository shows no habit for a choice that is hard to reverse, such as a new file's name or place, survey it with the pq-ask-top-repos skill when it is installed, and otherwise ask the user.
 
 Read the target's reference before writing:
 
@@ -51,7 +50,6 @@ Read the target's reference before writing:
 - README: [references/readme.md](references/readme.md)
 - CONTRIBUTING: [references/contributing.md](references/contributing.md)
 - Coding standards: [references/coding-standards.md](references/coding-standards.md)
-- Decision records: [references/decisions.md](references/decisions.md)
 
 Done when the fact sits in exactly one home, other docs link to it, no superseded copy remains, and the target's reference is read.
 
@@ -60,7 +58,6 @@ Done when the fact sits in exactly one home, other docs link to it, no supersede
 Propose these before writing them, with the exact text and its evidence, and write once the user accepts:
 
 - a new or changed rule in an AGENTS.md, CONTRIBUTING, or the coding standards;
-- a new decision record;
 - a new doc file.
 
 Write directly a fix that keeps an existing statement true, and README content that describes code changed in the same task.

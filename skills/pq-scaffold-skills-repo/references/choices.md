@@ -16,7 +16,7 @@ Apply these whatever the answers:
    - "paoloq/skills" → `<owner>/<repo>`.
    - "Paolo Arduin's agent skills." → the description, then "Paolo Arduin" → the author.
    - Every whole word "pq" → the plugin name; it names the plugin, the marketplace, and the skill prefix. Match it as a whole word, as the regex `\bpq\b` does; macOS `sed` ignores `\b`.
-   - Every record's `date:` in `docs/decisions/` → today, leaving the placeholder in `adr-template.md`, and "Copyright (c) 2026" in `LICENSE` → this year.
+   - "Copyright (c) 2026" in `LICENSE` → this year.
 2. Delete the "## Scaffold source" section of `AGENTS.md`; it describes this wizard's source, not the new repository.
 3. Delete the "## Skills" section of `README.md`; it lists this source's skills, which the copy leaves out, and the target's first skill adds it back.
 4. After the answers' edits, renumber every list they shortened and repair any sentence a deleted clause left broken.
@@ -42,11 +42,10 @@ Pitch: Claude Code users install every skill at once with `/plugin install` and 
 Default: yes. Ships `.claude-plugin/` so Claude Code installs the collection with `/plugin install`.
 
 No:
-- Delete `.claude-plugin/` and `mise-tasks/check/plugin`, and the `claude-code` tool in `mise.toml`.
+- Delete `.claude-plugin/`, `mise-tasks/check/plugin`, and `mise.ci.toml`, and in `.github/workflows/ci.yml` the `env:` block that sets `MISE_ENV: ci`.
+- In `CONTRIBUTING.md`, delete the paragraph that starts "The plugin check runs".
 - In `README.md`, delete the "Claude Code:" line and the code block under it, and under "## Update" the paragraph that starts "Claude Code updates only" and the code block under it.
-- In `docs/decisions/0001-…`, delete the consequence that starts "Bad, because Claude names plugin skills".
-- In `docs/decisions/0005-…`, delete the sentence "A `version` in `plugin.json` keeps Claude Code users on that version until someone changes the string." and the consequence that starts "Bad, because `claude plugin validate` warns".
-- In `docs/decisions/0007-…`, delete ", and `claude plugin validate` warns about a `CLAUDE.md` at the plugin root".
+- In `AGENTS.md`, delete ", and `claude plugin validate` warns about one at the plugin root".
 - Apply [One agent dropped](#one-agent-dropped) for Claude Code, unless the Codex plugin is off too.
 
 ## Codex plugin
@@ -65,9 +64,8 @@ No:
 Drop the agent from each sentence that names both "Claude Code" and "Codex" as plugin targets:
 - `README.md`: "for Claude Code and Codex".
 - `AGENTS.md`: "to Claude Code and Codex".
-- `docs/decisions/0005-…`: the clause on the dropped agent in "Claude Code uses the commit SHA, Codex reinstalls a plugin whenever its marketplace upgrade pulls new commits".
 
-The decision record for this choice is 0002; see [Decision records](#decision-records). Every other mention stays: it describes how each agent works with skills, which holds without the plugin.
+Every other mention stays: it describes how each agent works with skills, which holds without the plugin.
 
 ### Both plugins dropped
 
@@ -78,10 +76,9 @@ Apply both "No" lists above, without [One agent dropped](#one-agent-dropped), th
   - "Any other agent:" → Any agent:, in both sections.
   - "The plugin has no versions, so every merge to `main` is an update, and it reaches you when you update." → Every merge to `main` reaches you when you update.
 - In `AGENTS.md`, "shipped as the plugin `pq` to Claude Code and Codex and as plain skills to `npx skills`." → shipped as plain skills to `npx skills`.
+- In `AGENTS.md`, "Codex and `npx skills` install skills without the plugin namespace, so the prefix keeps names unique next to other collections." → the prefix keeps names unique next to other collections.
 - In `CONTRIBUTING.md`, "The plugins carry no version, so a merge reaches users" → A merge reaches users.
-- Delete `mise-tasks/check/manifests`, `docs/decisions/0002-…`, and `docs/decisions/0003-…`; with no plugin manifest, nothing is left for them to guard.
-- In `docs/decisions/0001-…`, drop ", one plugin" from both the option and the "Chosen option" quote, which must stay identical, and retitle → Flat skills with a shared name prefix. When the prefix is none too, retitle → Flat skills.
-- In `docs/decisions/0005-…`, change "Without one, Claude Code uses the commit SHA, Codex reinstalls a plugin whenever its marketplace upgrade pulls new commits, and `npx skills` compares" → `npx skills` compares, and retitle → No versions: npx skills tracks each skill's contents.
+- Delete `mise-tasks/check/manifests`; with no plugin manifest, nothing is left for it to guard.
 
 ## Skill name prefix
 
@@ -91,7 +88,7 @@ Default: `<plugin name>-` on every skill, so names stay unique where installers 
 
 None:
 - In `mise.toml`, set `SKILL_PREFIX = ""`.
-- In `AGENTS.md`, change "skills/pq-<name>/SKILL.md" → skills/<name>/SKILL.md.
+- In `AGENTS.md`, change "skills/pq-<name>/SKILL.md" → skills/<name>/SKILL.md, and delete the line that starts "Start every skill name with".
 
 ## Frontmatter
 
@@ -101,19 +98,19 @@ Default: the six spec keys plus `disable-model-invocation`, so a skill can fire 
 
 Spec keys only:
 - In `mise.toml`, set `SKILL_INVOCATION_KEY = ""`.
-- In `AGENTS.md`, change "spec keys plus `disable-model-invocation`" → spec keys, keeping its link; delete the line that starts "A skill that fires only when the user types its name"; and delete the sentence that starts "A user-invoked skill's `description`".
+- In `AGENTS.md`, change "spec keys plus `disable-model-invocation`, the one Claude extension a user-invoked skill needs; every other key stays portable." → spec keys, so every skill stays portable. Delete the line that starts "A skill that fires only when the user types its name", and delete the sentence that starts "A user-invoked skill's `description`".
 
 ## Task runner
 
 Pitch: mise installs pinned versions of every tool and runs all the checks with one command, the same way on a laptop and in CI.
 
-Default: mise pins the tools and runs the checks as tasks, and `mise run check` is the gate. **Open**: the gate becomes the named tool's command that runs every `mise-tasks/check/*` script and `hk check --all`, or the workflow linter itself when hk goes. When the user also drops mise for pinning tools, have the named tool install them, or list them in the "## Set up" section of `CONTRIBUTING.md`. Its record is 0006.
+Default: mise pins the tools and runs the checks as tasks, and `mise run check` is the gate. **Open**: the gate becomes the named tool's command that runs every `mise-tasks/check/*` script and `hk check --all`, or the workflow linter itself when hk goes. When the user also drops mise for pinning tools, have the named tool install them, or list them in the "## Set up" section of `CONTRIBUTING.md`.
 
 ## Git hooks
 
 Pitch: before each commit, the hook runs the same checks as CI and rejects a commit message that is not a Conventional Commit, so problems surface before a push. Without it, the checks surface in CI, and the hk linters for merge-conflict markers, final newlines, and trailing whitespace go away.
 
-Default: hk runs `mise run check` before each commit, and hosts the linters in `hk.pkl`, such as the workflow linter, which the gate runs through the `check:lint` task. **Open**: the named tool runs the gate before each commit, and checks commit messages against Conventional Commits; the linters move to it, or to mise tasks. Its record is 0006.
+Default: hk runs `mise run check` before each commit, and hosts the linters in `hk.pkl`, such as the workflow linter, which the gate runs through the `check:lint` task. **Open**: the named tool runs the gate before each commit, and checks commit messages against Conventional Commits; the linters move to it, or to mise tasks.
 
 None:
 - Delete `hk.pkl`, and the `hk` tool in `mise.toml`.
@@ -123,13 +120,12 @@ None:
 - In `CONTRIBUTING.md`, replace the step that starts "Commit with" → Commit with [Conventional Commits](https://www.conventionalcommits.org) messages.
 - In `AGENTS.md`, change "the hk pre-commit hook and CI run it too" → CI runs it too.
 - In `AGENTS.md`, change "Write task and hook commands" → Write task commands.
-- In `docs/decisions/0006-…`, retitle → mise runs the tasks, keeping its file name, and change "locally, before a commit, and in CI" → locally and in CI; its options stay, since they compare task runners.
 
 ## CI
 
 Pitch: every push and pull request runs the checks, and the branch rule blocks a merge until they pass.
 
-Default: GitHub Actions, through `.github/workflows/ci.yml`, runs the gate on every push and pull request to `main`; a final job named `check` passes only when every gate run passes, so the ruleset requires that one job. **Open**: the named CI runs the gate on the same events and operating systems. With a CI other than GitHub Actions, delete the CI badge from the top of `README.md`, skip [Workflow linter](#workflow-linter) and apply its None, and drop the whole `required_status_checks` rule from the ruleset in [GitHub settings](#github-settings), since GitHub no longer receives the `check` job.
+Default: GitHub Actions, through `.github/workflows/ci.yml`, runs the gate on every push and pull request to `main`; a final job named `check` passes only when every gate run passes, so the ruleset requires that one job. **Open**: the named CI runs the gate on the same events and operating systems, with `MISE_ENV=ci` while `mise.ci.toml` stays. With a CI other than GitHub Actions, delete the CI badge from the top of `README.md`, skip [Workflow linter](#workflow-linter) and apply its None, and drop the whole `required_status_checks` rule from the ruleset in [GitHub settings](#github-settings), since GitHub no longer receives the `check` job.
 
 ## Workflow linter
 
@@ -149,28 +145,6 @@ No:
 - In `.github/workflows/ci.yml`, change "os: [ubuntu-latest, windows-latest]" → os: [ubuntu-latest]. With a CI other than GitHub Actions, run that CI on Linux only.
 - In `mise.toml`, delete the `PYTHONUTF8` line and the comment above it.
 - In `AGENTS.md`, under "## Windows", replace the line that starts "CI runs the gate on Windows too" → Keep every file working on Windows, should the repository support it later:
-
-## Decision records
-
-Pitch: [MADR](https://adr.github.io/madr/) (Markdown Architectural Decision Records) keeps one short file per lasting choice: the problem, the options weighed, the one chosen and its downsides. The repository starts with records for the setup choices, rewritten to match your answers, so you and later agents know why something is set up a certain way before changing it. Without them, the reasons live only in commit messages.
-
-Show: the title of each record in the source's `docs/decisions/`, rewritten for the answers given so far.
-
-Default: MADR records in `docs/decisions/`, updated to match these answers.
-
-Choices map to records: the plugins to 0002, the prefix to 0001, frontmatter to 0004, Windows support to 0008. When such an answer differs from the default, edit its record in place, since the new repository has no history to supersede:
-- Retitle it after the chosen option, rename its file to match, and fix links to the old name.
-- List the chosen option under "Considered Options", adding it when missing, and keep the rejected default there.
-- Rewrite "Chosen option" with the user's reason, and edit or delete any context sentence or consequence that no longer holds.
-
-The plugin and hook sections above name their own record edits. Records whose choices kept their defaults stay as copied.
-
-None:
-- Delete `docs/decisions/`.
-- In `AGENTS.md`, delete each link that starts " ([why](docs/decisions/", through its closing parenthesis, and the "## Decisions" section.
-- In `README.md`, ", [AGENTS.md](AGENTS.md) holds the authoring rules, and [docs/decisions/](docs/decisions/) records why the repository is set up this way." → and [AGENTS.md](AGENTS.md) holds the authoring rules.
-- In `CONTRIBUTING.md`, delete ", and the reasons behind the setup in [docs/decisions/](docs/decisions/)" and " ([why](docs/decisions/0005-no-versions.md))".
-- Delete the reference to `docs/decisions/` from each comment in `mise-tasks/check/manifests` and `mise-tasks/check/plugin`, where those files remain.
 
 ## Pull request template
 
@@ -221,7 +195,6 @@ When the user names a tool for an open choice:
 1. Tell the user, in the round that raises it, that the wizard has not tested that tool and will set it up to do the default's job.
 2. Replace the default's files with the named tool's own setup, doing the same job on the same triggers, and swap the default's entry in `mise.toml` for the named tool's while mise stays.
 3. Replace every mention of the default and its commands across `README.md`, `CONTRIBUTING.md`, `AGENTS.md`, `.github/pull_request_template.md`, the remaining workflows, and `hk.pkl` when it stays.
-4. When the decision records stay, rewrite the record the choice names, or add one from `docs/decisions/adr-template.md` when it names none.
 
 Step 5 then installs and runs the named tool instead of the default.
 

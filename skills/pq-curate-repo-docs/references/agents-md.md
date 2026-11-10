@@ -6,7 +6,7 @@ The root AGENTS.md is the working agreement every agent session loads; a nested 
 
 1. Hold what most tasks need: what the project is, its commands, testing rules, conventions that span the codebase, commit and pull request rules, and boundaries: what to ask before doing, and what never to do.
 2. List the commands an agent cannot guess, plus the gate, and point to CONTRIBUTING or the task runner's own listing for the rest.
-3. Point to the doc that owns a topic, such as CONTRIBUTING, the coding standards, the decision records, or the skills folder, rather than copying it.
+3. Point to the doc that owns a topic, such as CONTRIBUTING, the coding standards, or the skills folder, rather than copying it.
 4. When the repository has nested AGENTS.md files, include the line "Before editing a file, read every AGENTS.md on the path from the root to it": Codex loads only the files on the path to its working directory, so a session started at the root misses the rest.
 5. Keep it under 200 lines; past that, propose moving component rules into nested files and procedures into their owning docs rather than compressing it.
 
