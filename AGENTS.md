@@ -6,8 +6,7 @@ Keep every agent instruction in this file, and add no `CLAUDE.md`: Claude Code 2
 
 ## Skills
 
-- A skill lives in `skills/pq-<name>/SKILL.md`; the folder is the whole skill, because `npx skills` copies only that folder.
-- Start every skill name with `pq-`: Codex and `npx skills` install skills without the plugin namespace, so the prefix keeps names unique next to other collections.
+- A skill lives in `skills/pq-<name>/SKILL.md`; the folder is the whole skill, because `npx skills` copies only that folder. The `pq-` prefix keeps names unique where Codex and `npx skills` install skills without the plugin namespace.
 - Frontmatter uses the six Agent Skills spec keys plus `disable-model-invocation`, the one Claude extension a user-invoked skill needs; every other key stays portable.
 - A skill that fires only when the user types its name sets `disable-model-invocation: true` in `SKILL.md` and `policy.allow_implicit_invocation: false` in `agents/openai.yaml`; Claude reads the first, Codex the second.
 - A model-invoked skill's `description` is a context pointer loaded in every session: lead with what the skill does, then one trigger per distinct case. A user-invoked skill's `description` is a one-line summary for the human.
@@ -25,4 +24,4 @@ CI runs the gate on Windows too, so keep every file working there:
 
 ## Scaffold source
 
-[pq-scaffold-skills-repo](skills/pq-scaffold-skills-repo/SKILL.md) builds new repositories by copying this one from `main` and editing the copy per [its choices table](skills/pq-scaffold-skills-repo/references/choices.md). When a change adds, removes, or renames a repository file, or moves text the table names, update the table in the same change.
+[pq-scaffold-skills-repo](skills/pq-scaffold-skills-repo/SKILL.md) builds new repositories by copying this one from `main` and editing the copy per [its choices table](skills/pq-scaffold-skills-repo/references/choices.md). When a change adds, removes, or renames a repository file, or edits text the table quotes, update the table in the same change, so every quoted text still matches its file exactly once.

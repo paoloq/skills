@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Scaffold a skills repository
 
-Build a skills collection by copying paoloq/skills, itself a working collection, and tailoring the copy to the user's answers. [references/choices.md](references/choices.md) lists every choice with its default, its supported alternatives, and the exact edits each answer makes. Offer the alternatives it lists; a choice the table marks **open** also takes any tool the user names.
+Build a skills collection by copying paoloq/skills, itself a working collection, and tailoring the copy to the user's answers. [references/choices.md](references/choices.md) lists every choice with its default, its supported alternatives, and the exact edits each answer makes.
 
 ## Voice
 
@@ -61,10 +61,7 @@ Done when the user has replied `ok`, or any plain yes, to the summary.
 1. Copy the source folder into the target, except the top-level `/.git`, `/skills`, `/mise.lock`, `/mise.ci.lock`, and `/.mise`. Exclude them at the top level only, so `mise-tasks/check/skills` is copied.
 2. Apply "Every scaffold" in the table, then each answer's edits.
 
-Done when every edit "Every scaffold" and the answers call for is applied, and a search of the target outside `.git` finds:
-
-- only the user's own values for `paoloq`, `Paolo Arduin`, and the whole word `pq`;
-- no "## Scaffold source" heading.
+Done when every edit "Every scaffold" and the answers call for is applied, and a search of each file "Every scaffold" edits finds none of the source text it replaces or deletes there, except where the new value equals that text.
 
 ## 5. Verify
 
@@ -90,7 +87,7 @@ Tell the user what you wrote, which settings you changed, and the next steps:
 
 - Commit everything, including the generated `mise.lock` and any `mise.ci.lock`, which pin the tool installs, and push it to `main`.
 - After the user pushes the scaffold to `main`, apply the ruleset from "GitHub settings"; offer to run it once the user confirms the push. From then on, `main` takes changes only through pull requests.
-- Add the first skill under `skills/` in a pull request, following the target's `AGENTS.md`; until then, the checks validate only the manifests.
+- Add the first skill under `skills/` in a pull request, following the target's `AGENTS.md`; until then, the checks have no skill to validate.
 - The README holds the install commands for each agent.
 
 Leave committing and pushing to the user.
