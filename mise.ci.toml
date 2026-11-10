@@ -1,4 +1,4 @@
 # CI alone installs Claude Code, for check:plugin; locally the check runs the
 # contributor's own `claude`, which a second mise-installed copy would shadow
 [tools]
-claude-code = "2.1.296"
+claude-code = "2.1.322"
