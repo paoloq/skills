@@ -16,7 +16,7 @@ Apply these whatever the answers:
    - "paoloq/skills" → `<owner>/<repo>`.
    - "Paolo Arduin's agent skills." → the description, then "Paolo Arduin" → the author.
    - Every whole word "pq" → the plugin name; it names the plugin, the marketplace, and the skill prefix. Match it as a whole word, as the regex `\bpq\b` does; macOS `sed` ignores `\b`.
-   - "# ⚡ Skillz" in `README.md` → `# ` and the repository name.
+   - "# ⚡ Skills" in `README.md` → `# ` and the repository name.
    - "Copyright (c) 2026" in `LICENSE` → this year.
 2. Delete the "## Scaffold source" section of `AGENTS.md`; it describes this wizard's source, not the new repository.
 3. Delete the "## Skills" section of `README.md`; it lists this source's skills, which the copy leaves out, and the target's first skill adds it back.

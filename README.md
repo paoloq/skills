@@ -1,4 +1,4 @@
-# ⚡ Skillz
+# ⚡ Skills
 
 [![CI](https://github.com/paoloq/skills/actions/workflows/ci.yml/badge.svg)](https://github.com/paoloq/skills/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/paoloq/skills)](LICENSE)
 
