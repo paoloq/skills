@@ -62,7 +62,7 @@ npx skills update
 
 ## Contributing
 
-[CONTRIBUTING.md](CONTRIBUTING.md) covers setup and making a change, [AGENTS.md](AGENTS.md) holds the authoring rules, and [docs/decisions/](docs/decisions/) records why the repository is set up this way.
+[CONTRIBUTING.md](CONTRIBUTING.md) covers setup and making a change, and [AGENTS.md](AGENTS.md) holds the authoring rules.
 
 ## Help
 

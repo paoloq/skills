@@ -6,8 +6,11 @@
 """Run `claude plugin validate` and fail on any error or warning but one.
 
 The manifests carry no version on purpose, so installers track the latest
-commit (docs/decisions/0005); the validator warns about that, and --strict
-would turn the warning into a failure. Every other warning still fails.
+commit; the validator warns about that, and --strict would turn the warning
+into a failure. Every other warning still fails. The output's plugin directory
+checks, such as a missing icon, are skipped: the validator says they do not
+change the result, and they matter only for a plugin submitted to
+Anthropic's plugin directory.
 """
 
 import subprocess
@@ -15,6 +18,7 @@ import sys
 
 TARGETS = (".", ".claude-plugin/plugin.json")
 ALLOWED_WARNING = "version: No version specified"
+DIRECTORY_CHECKS_HEADING = "Plugin directory checks for"
 
 
 def main() -> int:
@@ -22,7 +26,8 @@ def main() -> int:
     for target in TARGETS:
         result = subprocess.run(["claude", "plugin", "validate", target], capture_output=True, encoding="utf-8")
         output = result.stdout + result.stderr
-        findings = [line.strip().lstrip("❯").strip() for line in output.splitlines() if line.strip().startswith("❯")]
+        result_section = result.stdout.split(DIRECTORY_CHECKS_HEADING)[0] + result.stderr
+        findings = [line.strip().lstrip("❯").strip() for line in result_section.splitlines() if line.strip().startswith("❯")]
         unexpected = [finding for finding in findings if ALLOWED_WARNING not in finding]
         if result.returncode != 0 or unexpected:
             print(output, file=sys.stderr)

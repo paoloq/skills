@@ -49,7 +49,7 @@ Done when every file and every quoted source text that [references/choices.md](r
 Interview the user from [references/choices.md](references/choices.md) in rounds, in plain chat. Each round is one message: the round's table written out in full, then its one-line question as the last line, ending your turn so the user reads the table and replies. A question picker would hide the table behind it, so the rounds use chat replies.
 
 1. **🎤 Identity:** a table of the identity values with your proposals; ask the user to reply `ok` or say what to change.
-2. **⚡ Express:** a table of every remaining choice in the table's order, one row each: number, choice, ⭐ answer in a few plain words, what it gives the user from its pitch in one line, and its alternatives, ending with "or another tool" for an open choice. Ask the user to reply `ok` to take them all, name the numbers to change, or say "one by one". For "one by one", ask each choice in its own short message, numbered as "🎤 3/14 · Skill name prefix", opening with its pitch and its **Show** table, when it has one, so the user can judge before answering.
+2. **⚡ Express:** a table of every remaining choice in the table's order, one row each: number, choice, ⭐ answer in a few plain words, what it gives the user from its pitch in one line, and its alternatives, ending with "or another tool" for an open choice. Ask the user to reply `ok` to take them all, name the numbers to change, or say "one by one". For "one by one", ask each choice in its own short message, numbered as "🎤 3/13 · Skill name prefix", opening with its pitch and its **Show** table, when it has one, so the user can judge before answering.
 3. **🎤 Summary:** a table with one row per identity value and one row per choice, in the table's order; ask the user to reply `ok` to build it or say what to change.
 
 Ask a follow-up value, such as a licence identifier or an email address, in the round that raises it, and skip a choice an earlier answer settles.
@@ -58,20 +58,19 @@ Done when the user has replied `ok`, or any plain yes, to the summary.
 
 ## 4. Write the files
 
-1. Copy the source folder into the target, except the top-level `/.git`, `/skills`, `/mise.lock`, and `/.mise`. Exclude them at the top level only, so `mise-tasks/check/skills` is copied.
-2. Apply "Every scaffold" in the table, then each answer's edits, including the decision records it changes.
+1. Copy the source folder into the target, except the top-level `/.git`, `/skills`, `/mise.lock`, `/mise.ci.lock`, and `/.mise`. Exclude them at the top level only, so `mise-tasks/check/skills` is copied.
+2. Apply "Every scaffold" in the table, then each answer's edits.
 
 Done when every edit "Every scaffold" and the answers call for is applied, and a search of the target outside `.git` finds:
 
 - only the user's own values for `paoloq`, `Paolo Arduin`, and the whole word `pq`;
-- today in every record's `date:` in `docs/decisions/`;
 - no "## Scaffold source" heading.
 
 ## 5. Verify
 
-In the target, set up the chosen tools and run the gate. With the defaults: confirm that `mise --version` is at least the `min_version` in `mise.toml`, then run `mise trust`, `mise install`, `mise lock`, `mise exec -- hk install` when hooks stay, and `mise run check`; `mise install` writes `mise.lock` for this machine only, and `mise lock` adds the other platforms, such as the Linux one CI runs on. With another tool, run its own install and gate commands. When a check fails in a generated file, fix that file; the checks encode the answers.
+In the target, set up the chosen tools and run the gate. With the defaults: confirm that `mise --version` is at least the `min_version` in `mise.toml`, then run `mise trust`, `mise install`, `mise lock`, `mise lock` again with `MISE_ENV=ci` while `mise.ci.toml` stays, `mise exec -- hk install` when hooks stay, and `mise run check`; `mise install` writes `mise.lock` for this machine only, and `mise lock` adds the other platforms, such as the Linux one CI runs on. With another tool, run its own install and gate commands. When a check fails in a generated file, fix that file; the checks encode the answers.
 
-Done when the gate passes and, while mise stays, `mise.lock` lists `linux-x64`, and `windows-x64` when Windows support stays. When a chosen tool is missing or too old, the network fails, or a failure lies outside the generated files, clean up (step 7), stop, and tell the user what failed.
+Done when the gate passes and, while mise stays, `mise.lock` and any `mise.ci.lock` list `linux-x64`, and `windows-x64` when Windows support stays. When a chosen tool is missing or too old, the network fails, or a failure lies outside the generated files, clean up (step 7), stop, and tell the user what failed.
 
 ## 6. Apply GitHub settings
 
@@ -89,7 +88,7 @@ Done when the source folder no longer exists.
 
 Tell the user what you wrote, which settings you changed, and the next steps:
 
-- Commit everything, including the generated `mise.lock`, which pins the tool installs, and push it to `main`.
+- Commit everything, including the generated `mise.lock` and any `mise.ci.lock`, which pin the tool installs, and push it to `main`.
 - After the user pushes the scaffold to `main`, apply the ruleset from "GitHub settings"; offer to run it once the user confirms the push. From then on, `main` takes changes only through pull requests.
 - Add the first skill under `skills/` in a pull request, following the target's `AGENTS.md`; until then, the checks validate only the manifests.
 - The README holds the install commands for each agent.
