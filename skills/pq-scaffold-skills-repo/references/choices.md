@@ -71,7 +71,7 @@ Every other mention stays: it describes how each agent works with skills, which 
 
 Apply both "No" lists above, without [One agent dropped](#one-agent-dropped), then:
 - In `README.md`:
-  - "They ship as the plugin `pq` for Claude Code and Codex, and as plain skills" → They ship as plain skills.
+  - "shipped as the plugin `pq` for Claude Code and Codex, and as plain skills" → shipped as plain skills.
   - Delete the line "Pick one route per agent; installing through both gives you every skill twice."
   - "Any other agent:" → Any agent:, in both sections.
   - "The plugin has no versions, so every merge to `main` is an update, and it reaches you when you update." → Every merge to `main` reaches you when you update.
@@ -177,7 +177,7 @@ Default: not accepted.
 
 Accepted, in `CONTRIBUTING.md`:
 - "This collection takes no outside pull requests." → Outside pull requests are welcome; open an issue before proposing a new skill.
-- "Branch from `main`;" → Fork the repository or branch from `main`;.
+- "Branch from `main`," → Fork the repository or branch from `main`,.
 
 ## Security reports
 
