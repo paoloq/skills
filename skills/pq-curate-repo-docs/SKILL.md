@@ -82,7 +82,7 @@ Done when every proposed change is accepted or dropped, and every accepted or di
 
 **Human docs** (README, CONTRIBUTING): write in plain language, leading with what the reader came for, and run every copyable command before writing it.
 
-Done when every path is a link and every named symbol or command exists in the current tree.
+Done when every rule above that applies to the doc's kind holds, every path is a link, and every named symbol or command exists in the current tree.
 
 ## 5. Keep it true
 

@@ -16,6 +16,7 @@ Apply these whatever the answers:
    - "paoloq/skills" → `<owner>/<repo>`.
    - "Paolo Arduin's agent skills." → the description, then "Paolo Arduin" → the author.
    - Every whole word "pq" → the plugin name; it names the plugin, the marketplace, and the skill prefix. Match it as a whole word, as the regex `\bpq\b` does; macOS `sed` ignores `\b`.
+   - "# ⚡ Skillz" in `README.md` → `# ` and the repository name.
    - "Copyright (c) 2026" in `LICENSE` → this year.
 2. Delete the "## Scaffold source" section of `AGENTS.md`; it describes this wizard's source, not the new repository.
 3. Delete the "## Skills" section of `README.md`; it lists this source's skills, which the copy leaves out, and the target's first skill adds it back.
@@ -71,13 +72,13 @@ Every other mention stays: it describes how each agent works with skills, which 
 
 Apply both "No" lists above, without [One agent dropped](#one-agent-dropped), then:
 - In `README.md`:
-  - "They ship as the plugin `pq` for Claude Code and Codex, and as plain skills" → They ship as plain skills.
-  - Delete the line "Pick one route per agent; installing through both gives you every skill twice."
+  - "shipped as the plugin `pq` for Claude Code and Codex, and as plain skills" → shipped as plain skills.
+  - Delete the "> [!WARNING]" line and the line under it, "> Pick one route per agent; installing through both gives you every skill twice."
   - "Any other agent:" → Any agent:, in both sections.
   - "The plugin has no versions, so every merge to `main` is an update, and it reaches you when you update." → Every merge to `main` reaches you when you update.
 - In `AGENTS.md`, "shipped as the plugin `pq` to Claude Code and Codex and as plain skills to `npx skills`." → shipped as plain skills to `npx skills`.
-- In `AGENTS.md`, "Codex and `npx skills` install skills without the plugin namespace, so the prefix keeps names unique next to other collections." → the prefix keeps names unique next to other collections.
-- In `CONTRIBUTING.md`, "The plugins carry no version, so a merge reaches users" → A merge reaches users.
+- In `AGENTS.md`, "keeps names unique where Codex and `npx skills` install skills without the plugin namespace." → keeps names unique next to other collections.
+- In `CONTRIBUTING.md`, "The plugin carries no version, so a merge reaches users" → A merge reaches users.
 - Delete `mise-tasks/check/manifests`; with no plugin manifest, nothing is left for it to guard.
 
 ## Skill name prefix
@@ -88,7 +89,7 @@ Default: `<plugin name>-` on every skill, so names stay unique where installers 
 
 None:
 - In `mise.toml`, set `SKILL_PREFIX = ""`.
-- In `AGENTS.md`, change "skills/pq-<name>/SKILL.md" → skills/<name>/SKILL.md, and delete the line that starts "Start every skill name with".
+- In `AGENTS.md`, change "skills/pq-<name>/SKILL.md" → skills/<name>/SKILL.md, and delete the sentence that starts "The `pq-` prefix keeps names unique".
 
 ## Frontmatter
 
@@ -114,7 +115,7 @@ Default: hk runs `mise run check` before each commit, and hosts the linters in `
 
 None:
 - Delete `hk.pkl`, and the `hk` tool in `mise.toml`.
-- In `mise.toml`, replace the `[tasks."check:lint"]` table with a `[tasks."check:workflows"]` table whose `run` is `jactionlint` and whose description is "Lint the GitHub Actions workflows".
+- In `mise.toml`, replace the `[tasks."check:lint"]` table with a `[tasks."check:workflows"]` table whose `run` is `jactionlint` and whose description is `Lint the GitHub Actions workflows`.
 - Tell the user, in the round that raises it, that the merge-conflict, final-newline, and trailing-whitespace linters go with hk; only the workflow linter moves to mise.
 - In `CONTRIBUTING.md`, delete the line "mise exec -- hk install".
 - In `CONTRIBUTING.md`, replace the step that starts "Commit with" → Commit with [Conventional Commits](https://www.conventionalcommits.org) messages.
@@ -177,7 +178,7 @@ Default: not accepted.
 
 Accepted, in `CONTRIBUTING.md`:
 - "This collection takes no outside pull requests." → Outside pull requests are welcome; open an issue before proposing a new skill.
-- "Branch from `main`;" → Fork the repository or branch from `main`;.
+- "Branch from `main`," → Fork the repository or branch from `main`,.
 
 ## Security reports
 
@@ -250,4 +251,4 @@ In step 8, after the user pushes the scaffold to `main`, because the ruleset rej
 
   When it shows a `ruleset_id`, update that ruleset instead of creating a second one: read it with `gh api repos/<owner>/<repo>/rulesets/<id>`, add the rules it lacks to its own, and send the merged `name`, `target`, `enforcement`, `bypass_actors`, `conditions`, and `rules` with `gh api -X PUT repos/<owner>/<repo>/rulesets/<id> --input -`.
 
-  Read back with the same `rules/branches/main` call: it lists all five rule types.
+  Read back with the same `rules/branches/main` call: it lists every rule type you sent.

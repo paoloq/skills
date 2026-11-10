@@ -23,7 +23,7 @@ The plugin check runs the `claude` on your PATH, so install [Claude Code](https:
 3. Push and open a pull request to `main`, titled as a Conventional Commits message, with a body written from [the pull request template](.github/pull_request_template.md). `gh pr create --body` skips the template, so read it first. [CI](.github/workflows/ci.yml) runs `mise run check`.
 4. Squash-merge once CI passes, with the pull request title as the commit message.
 
-The plugins carry no version, so a merge reaches users the next time they update.
+The plugin carries no version, so a merge reaches users the next time they update.
 
 ## Security
 
